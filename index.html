@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="Super Mario Bros NES">
+		<meta name="author" content="Mattéo Legagneux">
+		<meta http-equiv="content-language" content="en-EN">
+		<link rel="icon" href="assets/favicon.ico">
+		<link rel="stylesheet" href="assets/sprites/sprites.css">
+		<style type="text/css">
+			@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
+
+			#debug {
+				padding: 10px;
+				background-color: rgba(0, 0, 0, 0.5);
+				color: #bbb;
+				font-family: "Roboto Mono"
+			}
+
+			#debug u {color: #fff}
+
+			#event {
+				padding: 10px;
+				background-color: rgba(0, 0, 0, 0.75);
+				color: #fff;
+				font-family: "Roboto Mono"
+			}
+
+			.left {box-shadow: inset 0 0 0 4px orange}
+			.below-left {box-shadow: inset 0 0 0 4px lime}
+			.below-right {box-shadow: inset 0 0 0 4px royalblue}
+			.below-left.below-right {box-shadow: inset 0 0 0 4px blue !important}
+		</style>
+		<title>Super Mario Bros NES</title>
+	</head>
+
+	<body onselectstart="return false">
+		<div id="debug"></div>
+		<div id="event">No event</div>
+		<span></span>
+		<div class="player"></div>
+		<div class="warp-pipe"></div>
+		<section class="map"></section>
+		<section class="environment"></section>
+		<section class="pause"></section>
+		<!-- scripts -->
+		<script src="gameplay/main.js"></script>
+		<script src="gameplay/ctrl.js"></script>
+	</body>
+
+</html>
