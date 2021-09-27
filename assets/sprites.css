@@ -1,6 +1,8 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
+
 * {image-rendering: crisp-edges /* this works only for Firefox, for Chrome use "pixelated" instead */}
 
-body {
+html, body {
 	margin: 0;
 	overflow: hidden;
 	/*background-color: #a1adff;*/
@@ -157,12 +159,12 @@ div.block {
 	position: absolute;
 	background-image: url(entity/mario.png);
 	background-size: 100%;
-	/*-webkit-animation: show_player 1.5s linear;*/
-	/*animation: show_player 1.5s linear;*/
+	/*-webkit-animation: playerSpawn 1.5s linear;*/
+	/*animation: playerSpawn 1.5s linear;*/
 	z-index: 2
 }
 
-@-webkit-keyframes show_player {
+@-webkit-keyframes playerSpawn {
 	0%, 79.999% {z-index: -1}
 	80% {
 		bottom: 192px;
@@ -171,13 +173,22 @@ div.block {
 	100% {bottom: 96px}
 }
 
-@keyframes show_player {
+@keyframes playerSpawn {
 	0%, 79.999% {z-index: -1}
 	80% {
 		bottom: 192px;
 		z-index: 2
 	}
 	100% {bottom: 96px}
+}
+
+@keyframes playerFall {
+	/*100% {background-color: red;}*/
+	0%, 29.999% {bottom: -48px}
+	30%, 69.999% {
+		bottom: 192px
+	}
+	70%, 100% {bottom: -48px}
 }
 
 /* goomba sprite */
@@ -190,28 +201,28 @@ div.block {
 	position: absolute;
 	background-image: url(entity/goomba.png);
 	background-size: 100%;
-	-webkit-animation: goomba_idle .5s infinite, goomba_walk 5s infinite linear;
-	animation: goomba_idle .5s infinite, goomba_walk 5s infinite linear;
+	-webkit-animation: goombaIdle .5s infinite, goomba_walk 5s infinite linear;
+	animation: goombaIdle .5s infinite, goomba_walk 5s infinite linear;
 	z-index: 10
 }
 
-@-webkit-keyframes goomba_idle {
+@-webkit-keyframes goombaIdle {
 	0%, 50% {-webkit-transform: rotateY(0)}
 	49%, 0% {-webkit-transform: rotateY(180deg)}
 }
 
-@keyframes goomba_idle {
+@keyframes goombaIdle {
 	0%, 50% {transform: rotateY(0)}
 	49%, 0% {transform: rotateY(180deg)}
 }
 
-@-webkit-keyframes goomba_walk {
+@-webkit-keyframes goombaWalk {
 	0% {left: 240px}
 	50% {left: 480px}
 	100% {left: 240px}
 }
 
-@keyframes goomba_walk {
+@keyframes goombaWalk {
 	0% {left: 240px}
 	50% {left: 480px}
 	100% {left: 240px}
@@ -219,7 +230,7 @@ div.block {
 
 /* paused element */
 .paused {
-	-webkit-animation-play-state: paused !important;
-	-moz-animation-play-state: paused !important;
-	animation-play-state: paused !important
+	-webkit-animation-play-state: paused;
+	-moz-animation-play-state: paused;
+	animation-play-state: paused
 }

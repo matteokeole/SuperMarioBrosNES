@@ -85,11 +85,13 @@ const Game = {
 			// right arrow, D key
 			case 39:
 			case 68:
-				dirRight = true;
-				break;
-			// spacebar
-			case 32:
-				if (!isJumping) isJumping = true
+				dirRight = true
+		}
+	},
+	keydownJump: function(e) {
+		if (e.keyCode === 32) {
+			canJump = false;
+			isJumping = true
 		}
 	},
 	keyup: function(e) {
@@ -106,7 +108,8 @@ const Game = {
 				break;
 			// spacebar
 			case 32:
-				isJumping = false
+				isJumping = false;
+				canJump = true
 		}
 	},
 	togglePauseMenu: function() {
@@ -126,13 +129,13 @@ const Game = {
 		// enable controls
 		if (!canLoop) {
 			document.addEventListener("keydown", Game.keydown);
+			(canJump) ? document.addEventListener("keydown", Game.keydownJump) : document.removeEventListener("keydown", Game.keydownJump); // jump handler
 			document.addEventListener("keyup", Game.keyup);
 			canLoop = window.requestAnimationFrame(Game.loop)
 		}
 	},
 	loop: function() {
 		canLoop = undefined;
-		event.innerText = "No event";
 		Player.sprite.style.backgroundImage = "url(assets/entity/mario-idle.png)";
 
 		rawX = (posX * 48).toFixed();
@@ -146,8 +149,6 @@ const Game = {
 		block.rightBottom = block.calcRightBottom();
 		block.belowLeft = block.calcBelowLeft();
 		block.belowRight = block.calcBelowRight();
-
-		if (posY === 426) {}
 
 		// movement handlers
 		if (!isDefined(block.leftTop) && !isDefined(block.leftBottom)) canMoveLeft = true;
@@ -187,37 +188,37 @@ const Game = {
 		if (isJumping) Player.sprite.style.backgroundImage = "url(assets/entity/mario-jump.png)";
 		canJump = (!isDefined(block.aboveLeft) && !isDefined(block.aboveRight));
 		if (canJump && isJumping) {
-			event.innerText = "JUMPING";
-			posY += Player.fallSpeed
+			canJump = false;
+			posY += Player.jumpSpeed
 		}
 
-		// reach jump top event
-		if (isJumping && (isDefined(block.aboveLeft) || isDefined(block.aboveRight))) {
-			// TO-DO
-			event.innerText = "REACHED TOP";
-			isJumping = false;
-			canJump = false;
-			isFalling = true
-		}
+		// jump reach event
+		if (isJumping && (isDefined(block.aboveLeft) || isDefined(block.aboveRight))) isJumping = false;
 
 		// fall event
 		isFalling = (!isJumping && !isDefined(block.belowLeft) && !isDefined(block.belowRight));
-		if (isFalling && !isJumping) {
-			event.innerText = "FALLING";
-			posY -= Player.fallSpeed
+		if (isFalling) {
+			canJump = false;
+			posY -= Player.fallSpeed;
+			if (posY === 0) {
+				canMoveLeft = false;
+				canMoveRight = false;
+				posY = 2;
+				// Player.sprite.style.visibility = "hidden";
+				// Player.sprite.style["-webkit-animation"] = "fall 1s";
+				Player.sprite.style.animation = "playerFall"
+			}
 		}
 
-		// debug
+		Player.sprite.style.bottom = `${rawY}px`;
+		Player.sprite.style.left = `${rawX}px`;
 		debug.innerHTML =
 			`<u>PosX:</u> ${posX.toFixed()}<br>
 			<u>PosY:</u> ${posY.toFixed()}<br>
 			<u>RawX:</u> ${rawX}<br>
 			<u>RawY:</u> ${rawY}<br>
-			<u>Right:</u> ${canMoveRight}<br>
-			<u>Left:</u> ${canMoveLeft}<br>`;
-
-		Player.sprite.style.bottom = `${rawY}px`;
-		Player.sprite.style.left = `${rawX}px`;
+			<u>canJump:</u> ${canJump}<br>
+			<u>isJumping:</u> ${isJumping}`;
 		Game.unfreeze()
 	},
 	freeze: function() {
@@ -227,17 +228,19 @@ const Game = {
 			canLoop = undefined
 		}
 		document.removeEventListener("keydown", Game.keydown);
+		document.removeEventListener("keydown", Game.keydownJump);
 		document.removeEventListener("keyup", Game.keyup)
 	}
 },
 Player = {
 	sprite: document.querySelector(".player"), // player element
 	speed: (6 / 48), // base speed
+	jumpSpeed: (6 / 48), // base jump speed
 	fallSpeed: (6 / 48) // base fall speed
 },
 isDefined = function(e) {
-	// check if the targeted element is either empty or part of the environment
-	return !(e === 0 || e.includes("behind"))
+	// check if the targeted element is either empty, border or part of the environment
+	return !(e === 0 || e === undefined || e.includes("behind"))
 },
 block = {
 	// calculate collisions coming from above, left, right and below
@@ -341,7 +344,6 @@ block = {
 map = document.querySelector(".map"),
 pause = document.querySelector(".pause"),
 debug = document.querySelector(".debug"),
-event = document.querySelector(".debug-event"),
 // terrain textures
 G = "ground",
 g = "ground behind",
@@ -359,12 +361,12 @@ let canLoop, // looping function
 paused = true, // game paused
 spawned = false, // player spawn animation end
 dirLeft, // left direction
-canMoveLeft, // can move to left
+canMoveLeft = true, // can move to left
 dirRight, // right direction
-canMoveRight, // can move to right
-canJump, // can do a jump
-isJumping, // is jumping
-isFalling, // is falling
+canMoveRight = true, // can move to right
+canJump = true, // can do a jump
+isJumping = false, // is jumping
+isFalling = false, // is falling
 posX = 2, // X start coord (based on the number of elements in the level row)
 posY = 2, // Y start coord (based on the number of elements in the level column)
 rawX, // X start coord (raw, * 48)
@@ -381,15 +383,15 @@ const lvl = [
 	[0, 0, 0, 0, 0, 0, B, Y, B, Y, B, 0, 0, 0, 0, 0, 0, 0, M, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, M, G, G, G, G, G, G, G, G, G],
-	[G, G, G, G, G, G, G, G, G, G, G, G, g, g, g, G, G, G, G, G, G, G, G, G, G, G, G, G, G],
-	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
+	[G, G, G, G, G, 0, 0, G, G, G, G, G, 0, 0, 0, G, G, G, G, G, G, G, G, G, G, G, G, G, G],
+	[G, G, G, G, G, 0, 0, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
 lvlRightBorder = (lvl[lvl.length - 1].length - 1); // equals to the length of the last row
 
 // load level
 map.style.height = `${48 * lvl.length}px`;
 Game.setLevelPattern(lvl);
-Game.setEnvironment();
+// Game.setEnvironment();
 
 // pause menu
 document.addEventListener("keydown", function(e) {if (e.keyCode === 27) Game.togglePauseMenu()});
