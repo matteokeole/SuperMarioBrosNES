@@ -1,0 +1,221 @@
+* {
+	image-rendering: crisp-edges /* this works only for Firefox, for Chrome use "pixelated" instead */
+}
+
+body {
+	margin: 0;
+	overflow: hidden;
+	background-color: #444;
+	/*background-color: #a1adff*/
+}
+
+/* pause menu */
+section.pause {
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	position: fixed;
+	background: rgba(0, 0, 0, 0.5) url(title_screen.png) center 25% no-repeat;
+	background-size: 528px 261px;
+	z-index: 10
+}
+
+/* blocks */
+
+div.block {
+	width: 48px;
+	height: 48px;
+	position: absolute;
+	background-size: 100%
+}
+
+.groundBlock {background-image: url(block/ground.png)}
+.brickBlock {background-image: url(block/brick.png)}
+.metalBlock {background-image: url(block/metal.png)}
+.emptyBlock {background-image: url(block/empty.png)}
+.hiddenBlock {background-image: url(block/hidden.png)} /* TO-DO */
+.mysteryBlock {background-image: url(block/mystery.png)} /* TO-DO */
+
+/* warp pipes */
+div.warp-pipe {
+	width: 105px;
+	height: 96px;
+	bottom: 96px;
+	left: 66px;
+	position: absolute;
+	background-image: url(warp-pipe.png);
+	background-size: 100%;
+	z-index: 1
+}
+
+/* environment */
+
+/* decorative bushes */
+
+div.bush {
+	height: 48px;
+	bottom: 96px;
+	position: absolute;
+	background-size: 100%;
+	z-index: -1
+}
+
+.bush.bush-1 {
+	width: 96px;
+	left: 0;
+	background-image: url(environment/bush1.png)
+}
+
+.bush.bush-2 {
+	width: 144px;
+	left: 100px;
+	background-image: url(environment/bush2.png)
+}
+
+.bush.bush-3 {
+	width: 192px;
+	left: 400px;
+	background-image: url(environment/bush3.png)
+}
+
+/* moving clouds in the background */
+
+div.cloud {
+	height: 72px;
+	position: absolute;
+	background-size: 100%;
+	-webkit-animation: cloud linear infinite;
+	animation: cloud linear infinite;
+	z-index: -1
+}
+
+@-webkit-keyframes cloud {100% {left: calc(1.1 * 100vw)}}
+@keyframes cloud {100% {left: calc(1.1 * 100vw)}}
+
+.cloud.cloud-1 {
+	width: 96px;
+	top: 48px;
+	background-image: url(environment/cloud1.png);
+	-webkit-animation-duration: 80s;
+	animation-duration: 80s
+}
+
+.cloud.cloud-2 {
+	width: 144px;
+	top: 144px;
+	background-image: url(environment/cloud2.png);
+	-webkit-animation-duration: 40s;
+	animation-duration: 40s
+}
+
+.cloud.cloud-3 {
+	width: 192px;
+	top: 240px;
+	background-image: url(environment/cloud3.png);
+	-webkit-animation-duration: 60s;
+	animation-duration: 60s
+}
+
+/* decorative hills */
+
+div.hill {
+	bottom: 96px;
+	position: absolute;
+	background-size: 100%;
+	z-index: -2
+}
+
+.hill.hill-1 {
+	width: 144px;
+	height: 57px;
+	background-image: url(environment/hill1.png)
+}
+
+.hill.hill-2 {
+	width: 240px;
+	height: 105px;
+	background-image: url(environment/hill2.png)
+}
+
+/* player sprite */
+
+div.player {
+	width: 48px;
+	height: 48px;
+	bottom: 96px;
+	left: 96px;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.5);
+	background-image: url(entity/mario.png);
+	background-size: 100%;
+	/*-webkit-animation: show_player 1s linear;*/
+	/*animation: show_player 1s linear;*/
+	-webkit-animation-play-state: paused;
+	-moz-animation-play-state: paused;
+	animation-play-state: paused;
+	z-index: 2
+}
+
+@-webkit-keyframes show_player {
+	0% {z-index: -1}
+	100% {
+		bottom: 192px;
+		z-index: -1
+	}
+}
+
+@keyframes show_player {
+	0% {z-index: -1}
+	100% {
+		bottom: 192px;
+		z-index: -1
+	}
+}
+
+/* goomba sprite */
+
+div.goomba {
+	width: 48px;
+	height: 48px;
+	bottom: 96px;
+	left: 240px;
+	position: absolute;
+	background-image: url(entity/goomba.png);
+	background-size: 100%;
+	-webkit-animation: goomba_idle .5s infinite, goomba_walk 5s infinite linear;
+	animation: goomba_idle .5s infinite, goomba_walk 5s infinite linear;
+	z-index: 10
+}
+
+@-webkit-keyframes goomba_idle {
+	0%, 50% {-webkit-transform: rotateY(0)}
+	49%, 0% {-webkit-transform: rotateY(180deg)}
+}
+
+@keyframes goomba_idle {
+	0%, 50% {transform: rotateY(0)}
+	49%, 0% {transform: rotateY(180deg)}
+}
+
+@-webkit-keyframes goomba_walk {
+	0% {left: 240px}
+	50% {left: 480px}
+	100% {left: 240px}
+}
+
+@keyframes goomba_walk {
+	0% {left: 240px}
+	50% {left: 480px}
+	100% {left: 240px}
+}
+
+/* paused element */
+.paused {
+	-webkit-animation-play-state: paused !important;
+	-moz-animation-play-state: paused !important;
+	animation-play-state: paused !important
+}
