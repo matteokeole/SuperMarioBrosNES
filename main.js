@@ -139,12 +139,12 @@ const Game = {
 
 		event.innerText = "No event";
 
-		/*block.aboveLeft = block.calcAboveLeft();
-		block.aboveRight = block.calcAboveRight();
-		block.leftTop = block.calcLeftTop();
-		block.leftBottom = block.calcLeftBottom();
+		// block.aboveLeft = block.calcAboveLeft();
+		// block.aboveRight = block.calcAboveRight();
+		// block.leftTop = block.calcLeftTop();
+		// block.leftBottom = block.calcLeftBottom();
 		block.rightTop = block.calcRightTop();
-		block.rightBottom = block.calcRightBottom();*/
+		block.rightBottom = block.calcRightBottom();
 		block.belowLeft = block.calcBelowLeft();
 		block.belowRight = block.calcBelowRight();
 
@@ -199,11 +199,11 @@ const Game = {
 		}*/
 
 		// fall event
-		/*isFalling = (!isJumping && !isDefined(block.belowLeft) && !isDefined(block.belowRight));
+		isFalling = (!isJumping && !isDefined(block.belowLeft) && !isDefined(block.belowRight));
 		if (isFalling && !isJumping) {
 			event.innerText = "FALLING";
 			posY -= Player.fallSpeed
-		}*/
+		}
 
 		// debug
 		debug.innerHTML =
@@ -231,7 +231,7 @@ const Game = {
 Player = {
 	sprite: document.querySelector(".player"), // player element
 	speed: (6 / 48), // base speed
-	fallSpeed: (8 / 48) // base fall speed
+	fallSpeed: (0.5 / 48) // base fall speed
 },
 isDefined = function(e) {
 	// check if the targeted element is either empty or part of the environment
@@ -288,8 +288,7 @@ block = {
 	calcRightTop: function() {
 		document.querySelectorAll(".map .right-top").forEach(function(e) {e.classList.remove("right-top")});
 		let request = [
-			(lvl.length - posY).toFixed(),
-			// Math.floor(posY),
+			(lvl.length - posY - 1.5).toFixed(),
 			(posX + 0.6).toFixed()
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("right-top")}
@@ -300,7 +299,7 @@ block = {
 	calcRightBottom: function() {
 		document.querySelectorAll(".map .right-bottom").forEach(function(e) {e.classList.remove("right-bottom")});
 		let request = [
-			Math.ceil(posY - 0.0001),
+			Math.floor(lvl.length - posY - 0.5001),
 			(posX + 0.6).toFixed()
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("right-bottom")}
@@ -311,7 +310,7 @@ block = {
 	calcBelowLeft: function() {
 		document.querySelectorAll(".map .below-left").forEach(function(e) {e.classList.remove("below-left")});
 		let request = [
-			(lvl.length - posY).toFixed(),
+			(lvl.length - posY - 0.5).toFixed(),
 			Math.floor(posX)
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("below-left")}
@@ -322,7 +321,7 @@ block = {
 	calcBelowRight: function() {
 		document.querySelectorAll(".map .below-right").forEach(function(e) {e.classList.remove("below-right")});
 		let request = [
-			(lvl.length - posY).toFixed(),
+			(lvl.length - posY - 0.5).toFixed(),
 			Math.ceil(posX)
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("below-right")}
@@ -373,7 +372,7 @@ const lvl = [
 	[0, 0, 0, 0, 0, 0, 0, Y, B, Y, B, 0, 0, 0, 0, 0, 0, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, M, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, M, M, M, M, M, G, G, G, G, G, G, G, G, G],
-	[G, G, G, G, g, g, g, G, G, G, G, G, g, g, g, g, g, G, G, G, G, G, G, G, G, G, G, G, G],
+	[G, G, 0, G, g, g, g, G, G, G, G, G, g, g, g, g, g, G, G, G, G, G, G, G, G, G, G, G, G],
 	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
 lvlRightBorder = (lvl[lvl.length - 1].length - 1); // equals to the length of the last row
