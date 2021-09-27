@@ -1,12 +1,11 @@
-* {
-	image-rendering: crisp-edges /* this works only for Firefox, for Chrome use "pixelated" instead */
-}
+* {image-rendering: crisp-edges /* this works only for Firefox, for Chrome use "pixelated" instead */}
 
 body {
 	margin: 0;
 	overflow: hidden;
-	background-color: #444;
-	/*background-color: #a1adff*/
+	/*background-color: #a1adff;*/
+	background-color: #754b3d;
+	user-select: none
 }
 
 /* pause menu */
@@ -21,7 +20,7 @@ section.pause {
 	position: fixed;
 	background: rgba(0, 0, 0, 0.5) url(menu.png) center 25% no-repeat;
 	background-size: 528px 261px;
-	z-index: 10
+	z-index: 3
 }
 
 /* blocks */
@@ -33,15 +32,20 @@ div.block {
 	background-size: 100%
 }
 
-.groundBlock {background-image: url(block/ground.png)}
-.brickBlock {background-image: url(block/brick.png)}
-.metalBlock {background-image: url(block/metal.png)}
-.emptyBlock {background-image: url(block/empty.png)}
-.hiddenBlock {background-image: url(block/hidden.png)} /* TO-DO */
-.mysteryBlock {background-image: url(block/mystery.png)} /* TO-DO */
+.block.ground {background-image: url(block/ground.png)}
+.block.ground {background-image: url(block/ground.png)}
+.block.brick {background-image: url(block/brick.png)}
+.block.metal {background-image: url(block/metal.png)}
+.block.empty {background-image: url(block/empty.png)}
+.block.hidden {background-image: url(block/hidden.png)}
+.block.mystery {background-image: url(block/mystery.png)}
+.block.behind {
+	opacity: 0.5;
+	box-shadow: inset 0 0 0 24px rgba(0, 0, 0, 0.2)
+}
 
 /* warp pipes */
-div.warp-pipe {
+.warp-pipe {
 	width: 105px;
 	height: 96px;
 	bottom: 96px;
@@ -56,7 +60,7 @@ div.warp-pipe {
 
 /* decorative bushes */
 
-div.bush {
+.bush {
 	height: 48px;
 	bottom: 96px;
 	position: absolute;
@@ -69,13 +73,11 @@ div.bush {
 	left: 0;
 	background-image: url(environment/bush1.png)
 }
-
 .bush.bush-2 {
 	width: 144px;
 	left: 100px;
 	background-image: url(environment/bush2.png)
 }
-
 .bush.bush-3 {
 	width: 192px;
 	left: 400px;
@@ -84,7 +86,7 @@ div.bush {
 
 /* moving clouds in the background */
 
-div.cloud {
+.cloud {
 	height: 72px;
 	position: absolute;
 	background-size: 100%;
@@ -103,7 +105,6 @@ div.cloud {
 	-webkit-animation-duration: 80s;
 	animation-duration: 80s
 }
-
 .cloud.cloud-2 {
 	width: 144px;
 	top: 144px;
@@ -111,7 +112,6 @@ div.cloud {
 	-webkit-animation-duration: 40s;
 	animation-duration: 40s
 }
-
 .cloud.cloud-3 {
 	width: 192px;
 	top: 240px;
@@ -122,7 +122,7 @@ div.cloud {
 
 /* decorative hills */
 
-div.hill {
+.hill {
 	bottom: 96px;
 	position: absolute;
 	background-size: 100%;
@@ -134,7 +134,6 @@ div.hill {
 	height: 57px;
 	background-image: url(environment/hill1.png)
 }
-
 .hill.hill-2 {
 	width: 240px;
 	height: 105px;
@@ -143,42 +142,41 @@ div.hill {
 
 /* player sprite */
 
-div.player {
+.player {
 	width: 48px;
 	height: 48px;
 	bottom: 96px;
 	left: 96px;
 	position: absolute;
-	background-color: rgba(0, 0, 0, 0.5);
+	/*background-color: rgba(0, 0, 0, 0.5);*/
 	background-image: url(entity/mario.png);
 	background-size: 100%;
-	/*-webkit-animation: show_player 1s linear;*/
-	/*animation: show_player 1s linear;*/
-	-webkit-animation-play-state: paused;
-	-moz-animation-play-state: paused;
-	animation-play-state: paused;
+	-webkit-animation: show_player 1.5s linear;
+	animation: show_player 1.5s linear;
 	z-index: 2
 }
 
 @-webkit-keyframes show_player {
-	0% {z-index: -1}
-	100% {
+	0%, 79.999% {z-index: -1}
+	80% {
 		bottom: 192px;
-		z-index: -1
+		z-index: 2
 	}
+	100% {bottom: 96px}
 }
 
 @keyframes show_player {
-	0% {z-index: -1}
-	100% {
+	0%, 79.999% {z-index: -1}
+	80% {
 		bottom: 192px;
-		z-index: -1
+		z-index: 2
 	}
+	100% {bottom: 96px}
 }
 
 /* goomba sprite */
 
-div.goomba {
+.goomba {
 	width: 48px;
 	height: 48px;
 	bottom: 96px;
