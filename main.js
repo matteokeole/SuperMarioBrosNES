@@ -1,4 +1,4 @@
-// init game methods
+// init
 const Game = {
 	setLevelPattern: function(lvl) {
 		// set a level by using a block pattern
@@ -9,16 +9,15 @@ const Game = {
 				if (lvl[i][j] !== 0) {
 					// ignores a blocks
 					let block = document.createElement("div");
-					block.className = `block ${lvl[i][j]}`;
-					if (!(lvl[i][j].includes("behind"))) block.classList.add(lvl[i][j] + i + j);
+					block.className = `block ${lvl[i][j]} ${lvl[i][j]}-${i}-${j}`;
 					block.style.bottom = `${y}px`;
 					block.style.left = `${x}px`;
 					map.appendChild(block)
 				}
-				x += 48
+				x += 48 // next element
 			}
-			x = 0; // return to the left
-			y += 48
+			x = 0; // return to the start of the row
+			y += 48 // next column
 		}
 	},
 	setEnvironment: function() {
@@ -55,24 +54,24 @@ const Game = {
 				pos: 573
 		}];
 		// decorative bushes
-		bushes.forEach(function(b) {
+		bushes.forEach(function(e) {
 			let bush = document.createElement("div");
-			bush.className = `bush ${b.class}`;
-			bush.style.left = `${b.pos}px`;
+			bush.className = `bush ${e.class}`;
+			bush.style.left = `${e.pos}px`;
 			environment.appendChild(bush)
 		});
 		// moving clouds in the background
-		clouds.forEach(function(c, i) {
+		clouds.forEach(function(e, i) {
 			let cloud = document.createElement("div");
-			cloud.className = `cloud ${c.class}`;
-			cloud.style.left = `${c.pos}px`;
+			cloud.className = `cloud ${e.class}`;
+			cloud.style.left = `${e.pos}px`;
 			environment.appendChild(cloud)
 		});
 		// decorative hills
-		hills.forEach(function(b) {
+		hills.forEach(function(e) {
 			let hill = document.createElement("div");
-			hill.className = `hill ${b.class}`;
-			hill.style.left = `${b.pos}px`;
+			hill.className = `hill ${e.class}`;
+			hill.style.left = `${e.pos}px`;
 			environment.appendChild(hill)
 		})
 	},
@@ -133,26 +132,29 @@ const Game = {
 	},
 	loop: function() {
 		canLoop = undefined;
+		event.innerText = "No event";
+		Player.sprite.style.backgroundImage = "url(assets/entity/mario-idle.png)";
 
 		rawX = (posX * 48).toFixed();
 		rawY = (posY * 48).toFixed();
 
-		event.innerText = "No event";
-
-		// block.aboveLeft = block.calcAboveLeft();
-		// block.aboveRight = block.calcAboveRight();
-		// block.leftTop = block.calcLeftTop();
-		// block.leftBottom = block.calcLeftBottom();
+		block.aboveLeft = block.calcAboveLeft();
+		block.aboveRight = block.calcAboveRight();
+		block.leftTop = block.calcLeftTop();
+		block.leftBottom = block.calcLeftBottom();
 		block.rightTop = block.calcRightTop();
-		// block.rightBottom = block.calcRightBottom();
+		block.rightBottom = block.calcRightBottom();
 		block.belowLeft = block.calcBelowLeft();
 		block.belowRight = block.calcBelowRight();
 
-		// if (!isDefined(block.leftTop) && !isDefined(block.leftBottom)) canMoveLeft = true;
-		// if (!isDefined(block.rightTop) && !isDefined(block.rightBottom)) canMoveRight = true;
+		if (posY === 426) {}
+
+		// movement handlers
+		if (!isDefined(block.leftTop) && !isDefined(block.leftBottom)) canMoveLeft = true;
+		if (!isDefined(block.rightTop) && !isDefined(block.rightBottom)) canMoveRight = true;
 
 		// left movement event
-	/*	if (dirLeft && canMoveLeft) {
+		if (dirLeft && canMoveLeft) {
 			canMoveRight = true;
 			posX -= Player.speed;
 			// sprite direction
@@ -162,12 +164,12 @@ const Game = {
 			if (posX <= 0) posX = 0; // border collision
 			if (isDefined(block.leftTop) || isDefined(block.leftBottom)) {
 				canMoveLeft = false;
-				if (posX % 1 !== 0) posX -= (posX % 1 - 1)
+				if (posX % 1 !== 0) posX -= (posX % 1) - 1 // avoid sticking
 			}
-		}*/
+		}
 
 		// right movement event
-		/*if (dirRight && canMoveRight) {
+		if (dirRight && canMoveRight) {
 			canMoveLeft = true;
 			posX += Player.speed;
 			// sprite direction
@@ -177,26 +179,26 @@ const Game = {
 			if (posX >= lvlRightBorder) posX = lvlRightBorder; // border collision
 			if (isDefined(block.rightTop) || isDefined(block.rightBottom)) {
 				canMoveRight = false;
-				if (posX % 1 !== 0) posX -= (posX % 1)
+				if (posX % 1 !== 0) posX -= (posX % 1) // avoid sticking
 			}
-		}*/
+		}
 
 		// jump event
-		/*canJump = (!isDefined(block.aboveLeft) && !isDefined(block.aboveRight));
+		if (isJumping) Player.sprite.style.backgroundImage = "url(assets/entity/mario-jump.png)";
+		canJump = (!isDefined(block.aboveLeft) && !isDefined(block.aboveRight));
 		if (canJump && isJumping) {
 			event.innerText = "JUMPING";
 			posY += Player.fallSpeed
 		}
-		if (isJumping) Player.sprite.style.backgroundImage = "url(assets/entity/mario-jump.png)";
-		else Player.sprite.style.backgroundImage = "url(assets/entity/mario-idle.png)";*/
 
 		// reach jump top event
-		/*if (isJumping && (block.aboveLeft !== undefined || block.aboveRight !== undefined)) {
+		if (isJumping && (isDefined(block.aboveLeft) || isDefined(block.aboveRight))) {
+			// TO-DO
 			event.innerText = "REACHED TOP";
 			isJumping = false;
 			canJump = false;
-			isFalling = true;
-		}*/
+			isFalling = true
+		}
 
 		// fall event
 		isFalling = (!isJumping && !isDefined(block.belowLeft) && !isDefined(block.belowRight));
@@ -231,7 +233,7 @@ const Game = {
 Player = {
 	sprite: document.querySelector(".player"), // player element
 	speed: (6 / 48), // base speed
-	fallSpeed: (0.5 / 48) // base fall speed
+	fallSpeed: (6 / 48) // base fall speed
 },
 isDefined = function(e) {
 	// check if the targeted element is either empty or part of the environment
@@ -241,93 +243,99 @@ block = {
 	// calculate collisions coming from above, left, right and below
 	aboveLeft: undefined,
 	calcAboveLeft: function() {
-		document.querySelectorAll(".map .above-left").forEach(function(e) {e.classList.remove("above-left")});
 		let request = [
-			(-posY + (lvl.length - 2.5)).toFixed(),
+			Math.ceil(lvl.length - posY - 2),
 			Math.floor(posX)
-		];
-		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("above-left")}
-		catch (e) {}
-		return lvl[request[0]][request[1]]
+		], query = lvl[request[0]][request[1]];
+		try {
+			document.querySelectorAll(".map .above-left").forEach(function(e) {e.classList.remove("above-left")}); // removing old collision class
+			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("above-left")
+		} catch (e) {}
+		return query
 	},
 	aboveRight: undefined,
 	calcAboveRight: function() {
-		document.querySelectorAll(".map .above-right").forEach(function(e) {e.classList.remove("above-right")});
 		let request = [
-			(-posY + (lvl.length - 2.5)).toFixed(),
+			Math.ceil(lvl.length - posY - 2),
 			Math.ceil(posX)
-		];
-		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("above-right")}
-		catch (e) {}
-		return lvl[request[0]][request[1]]
+		], query = lvl[request[0]][request[1]];
+		try {
+			document.querySelectorAll(".map .above-right").forEach(function(e) {e.classList.remove("above-right")}); // removing old collision class
+			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("above-right")
+		} catch (e) {}
+		return query
 	},
 	leftTop: undefined,
 	calcLeftTop: function() {
-		document.querySelectorAll(".map .left-top").forEach(function(e) {e.classList.remove("left-top")});
 		let request = [
-			Math.ceil(posY),
-			(posX - 0.6).toFixed()
-		];
-		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("left-top")}
-		catch (e) {}
-		return lvl[request[0]][request[1]]
+			Math.floor(lvl.length - posY - 1),
+			Math.ceil(posX - 1.2)
+		], query = lvl[request[0]][request[1]];
+		try {
+			document.querySelectorAll(".map .left-top").forEach(function(e) {e.classList.remove("left-top")}); // removing old collision class
+			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("left-top")
+		} catch (e) {}
+		return query
 	},
 	leftBottom: undefined,
 	calcLeftBottom: function() {
-		document.querySelectorAll(".map .left-bottom").forEach(function(e) {e.classList.remove("left-bottom")});
 		let request = [
-			Math.floor(posY - 0.0001),
-			(posX - 0.6).toFixed()
-		];
-		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("left-bottom")}
-		catch (e) {}
-		document.querySelector(".block.ground1")
-		return lvl[request[0]][request[1]]
+			Math.ceil(lvl.length - posY - 1.001),
+			Math.ceil(posX - 1.2)
+		], query = lvl[request[0]][request[1]];
+		try {
+			document.querySelectorAll(".map .left-bottom").forEach(function(e) {e.classList.remove("left-bottom")}); // removing old collision class
+			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("left-bottom")
+		} catch (e) {}
+		return query
 	},
 	rightTop: undefined,
 	calcRightTop: function() {
-		document.querySelectorAll(".map .right-top").forEach(function(e) {e.classList.remove("right-top")});
 		let request = [
-			(lvl.length - posY - 1.5).toFixed(),
-			(posX + 0.6).toFixed()
-		];
-		console.log(lvl.length - posY)
-		// try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("right-top")}
-		// catch (e) {}
-		// return lvl[request[0]][request[1]]
+			Math.floor(lvl.length - posY - 1),
+			Math.floor(posX + 1)
+		], query = lvl[request[0]][request[1]];
+		try {
+			document.querySelectorAll(".map .right-top").forEach(function(e) {e.classList.remove("right-top")}); // removing old collision class
+			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("right-top")
+		} catch (e) {}
+		return query
 	},
 	rightBottom: undefined,
 	calcRightBottom: function() {
-		document.querySelectorAll(".map .right-bottom").forEach(function(e) {e.classList.remove("right-bottom")});
 		let request = [
-			Math.floor(lvl.length - posY - 0.5001),
-			(posX + 0.6).toFixed()
-		];
-		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("right-bottom")}
-		catch (e) {}
-		return lvl[request[0]][request[1]]
+			Math.ceil(lvl.length - posY - 1.001),
+			Math.floor(posX + 1)
+		], query = lvl[request[0]][request[1]];
+		try {
+			document.querySelectorAll(".map .right-bottom").forEach(function(e) {e.classList.remove("right-bottom")}); // removing old collision class
+			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("right-bottom")
+		} catch (e) {}
+		return query
 	},
 	belowLeft: undefined,
 	calcBelowLeft: function() {
-		document.querySelectorAll(".map .below-left").forEach(function(e) {e.classList.remove("below-left")});
 		let request = [
-			(lvl.length - posY - 0.5).toFixed(),
+			Math.floor(lvl.length - posY),
 			Math.floor(posX)
-		];
-		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("below-left")}
-		catch (e) {}
-		return lvl[request[0]][request[1]]
+		], query = lvl[request[0]][request[1]];
+		try {
+			document.querySelectorAll(".map .below-left").forEach(function(e) {e.classList.remove("below-left")}); // removing old collision class
+			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("below-left")
+		} catch (e) {}
+		return query
 	},
 	belowRight: undefined,
 	calcBelowRight: function() {
-		document.querySelectorAll(".map .below-right").forEach(function(e) {e.classList.remove("below-right")});
 		let request = [
-			(lvl.length - posY - 0.5).toFixed(),
+			Math.floor(lvl.length - posY),
 			Math.ceil(posX)
-		];
-		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("below-right")}
-		catch (e) {}
-		return lvl[request[0]][request[1]]
+		], query = lvl[request[0]][request[1]];
+		try {
+			document.querySelectorAll(".map .below-right").forEach(function(e) {e.classList.remove("below-right")}); // removing old collision class
+			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("below-right")
+		} catch (e) {}
+		return query
 	}
 },
 map = document.querySelector(".map"),
@@ -365,20 +373,21 @@ rawY; // Y start coord (raw, * 48)
 // init level
 // level pattern
 const lvl = [
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, E, 0, E, B, Y, B, Y],
-	[0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M],
-	[0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M],
-	[0, 0, 0, 0, 0, 0, 0, Y, B, Y, B, 0, 0, 0, 0, 0, 0, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
-	[0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
-	[0, 0, 0, M, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, M, M, M, M, M, G, G, G, G, G, G, G, G, G],
-	[G, G, G, G, g, g, g, G, G, G, G, G, g, g, g, g, g, G, G, G, G, G, G, G, G, G, G, G, G],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, E, 0, E, B, Y, B, Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, Y, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, B, Y, B, Y, B, 0, 0, 0, 0, 0, 0, 0, M, M, G, G, 0, 0, 0, 0, 0, G, G],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, M, G, G, G, G, G, G, G, G, G],
+	[G, G, G, G, G, G, G, G, G, G, G, G, g, g, g, G, G, G, G, G, G, G, G, G, G, G, G, G, G],
 	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
 lvlRightBorder = (lvl[lvl.length - 1].length - 1); // equals to the length of the last row
 
 // load level
+map.style.height = `${48 * lvl.length}px`;
 Game.setLevelPattern(lvl);
 Game.setEnvironment();
 
@@ -390,4 +399,4 @@ pause.addEventListener("mousedown", Game.togglePauseMenu);
 setTimeout(function() {
 	spawned = true;
 	if (!paused) Game.unfreeze()
-}, 2000)
+}, /*2000*/0)

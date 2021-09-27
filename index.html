@@ -15,6 +15,7 @@
 
 			.debug {
 				padding: 10px;
+				position: fixed;
 				background-color: rgba(0, 0, 0, 0.5);
 				color: #bbb;
 				font-family: "Roboto Mono"
@@ -24,20 +25,26 @@
 
 			.debug-event {
 				padding: 10px;
+				position: fixed;
+				right: 0;
 				background-color: rgba(0, 0, 0, 0.75);
 				color: #fff;
 				font-family: "Roboto Mono"
 			}
 
+			/* collision above */
 			.above-left {box-shadow: inset 0 0 0 4px lightgreen}
 			.above-right {box-shadow: inset 0 0 0 4px green}
 			.above-left.above-right {box-shadow: inset 0 0 0 4px darkgreen}
+			/* left collision */
 			.left-top {box-shadow: inset 0 0 0 4px yellow}
 			.left-bottom {box-shadow: inset 0 0 0 4px orange}
 			.left-top.left-bottom {box-shadow: inset 0 0 0 4px red}
+			/* right collision */
 			.right-top {box-shadow: inset 0 0 0 4px lightblue}
 			.right-bottom {box-shadow: inset 0 0 0 4px royalblue}
 			.right-top.right-bottom {box-shadow: inset 0 0 0 4px darkblue}
+			/* collision below */
 			.below-left {box-shadow: inset 0 0 0 4px white}
 			.below-right {box-shadow: inset 0 0 0 4px black}
 			.below-left.below-right {box-shadow: inset 0 0 0 4px gray}
@@ -49,12 +56,12 @@
 		<div class="debug"></div>
 		<div class="debug-event"></div>
 
-		<section class="map"></section>
+		<section class="map">
+			<div class="player"></div>
+			<div class="warp-pipe"></div>
+		</section>
 		<section class="environment"></section>
 		<section class="pause"></section>
-
-		<div class="player"></div>
-		<div class="warp-pipe"></div>
 
 		<!-- game script -->
 		<script src="main.js"></script>

@@ -23,6 +23,13 @@ section.pause {
 	z-index: 3
 }
 
+.map {position: relative}
+
+.environment {
+	position: relative;
+	background-color: #a1adff
+}
+
 /* blocks */
 
 div.block {
@@ -53,7 +60,7 @@ div.block {
 	position: absolute;
 	background-image: url(warp-pipe.png);
 	background-size: 100%;
-	z-index: 1
+	z-index: -1
 }
 
 /* environment */
@@ -65,7 +72,7 @@ div.block {
 	bottom: 96px;
 	position: absolute;
 	background-size: 100%;
-	z-index: -1
+	z-index: -2
 }
 
 .bush.bush-1 {
@@ -88,11 +95,11 @@ div.block {
 
 .cloud {
 	height: 72px;
-	position: absolute;
+	position: fixed;
 	background-size: 100%;
 	-webkit-animation: cloud linear infinite;
 	animation: cloud linear infinite;
-	z-index: -1
+	z-index: -2
 }
 
 @-webkit-keyframes cloud {100% {left: calc(1.1 * 100vw)}}
@@ -126,7 +133,7 @@ div.block {
 	bottom: 96px;
 	position: absolute;
 	background-size: 100%;
-	z-index: -2
+	z-index: -3
 }
 
 .hill.hill-1 {
@@ -148,11 +155,10 @@ div.block {
 	bottom: 96px;
 	left: 96px;
 	position: absolute;
-	/*background-color: rgba(0, 0, 0, 0.5);*/
 	background-image: url(entity/mario.png);
 	background-size: 100%;
-	-webkit-animation: show_player 1.5s linear;
-	animation: show_player 1.5s linear;
+	/*-webkit-animation: show_player 1.5s linear;*/
+	/*animation: show_player 1.5s linear;*/
 	z-index: 2
 }
 
