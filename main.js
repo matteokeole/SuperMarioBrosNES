@@ -144,7 +144,7 @@ const Game = {
 		// block.leftTop = block.calcLeftTop();
 		// block.leftBottom = block.calcLeftBottom();
 		block.rightTop = block.calcRightTop();
-		block.rightBottom = block.calcRightBottom();
+		// block.rightBottom = block.calcRightBottom();
 		block.belowLeft = block.calcBelowLeft();
 		block.belowRight = block.calcBelowRight();
 
@@ -291,9 +291,10 @@ block = {
 			(lvl.length - posY - 1.5).toFixed(),
 			(posX + 0.6).toFixed()
 		];
-		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("right-top")}
-		catch (e) {}
-		return lvl[request[0]][request[1]]
+		console.log(lvl.length - posY)
+		// try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("right-top")}
+		// catch (e) {}
+		// return lvl[request[0]][request[1]]
 	},
 	rightBottom: undefined,
 	calcRightBottom: function() {
@@ -372,7 +373,7 @@ const lvl = [
 	[0, 0, 0, 0, 0, 0, 0, Y, B, Y, B, 0, 0, 0, 0, 0, 0, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, M, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, M, M, M, M, M, G, G, G, G, G, G, G, G, G],
-	[G, G, 0, G, g, g, g, G, G, G, G, G, g, g, g, g, g, G, G, G, G, G, G, G, G, G, G, G, G],
+	[G, G, G, G, g, g, g, G, G, G, G, G, g, g, g, g, g, G, G, G, G, G, G, G, G, G, G, G, G],
 	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
 lvlRightBorder = (lvl[lvl.length - 1].length - 1); // equals to the length of the last row
