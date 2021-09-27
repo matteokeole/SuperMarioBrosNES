@@ -3,22 +3,22 @@ const Game = {
 	setLevelPattern: function(lvl) {
 		// set a level by using a block pattern
 		// work only with 10-sized arrays!
-		let x = 0, y = 336;
-		for (let i = 0; i < lvl.length; i++) {
+		let x = 0, y = 0;
+		for (let i = lvl.length - 1; i >= 0; i--) {
 			for (let j = 0; j < lvl[i].length; j++) {
 				if (lvl[i][j] !== 0) {
 					// ignores a blocks
 					let block = document.createElement("div");
 					block.className = `block ${lvl[i][j]}`;
 					if (!(lvl[i][j].includes("behind"))) block.classList.add(lvl[i][j] + i + j);
-					block.style.bottom = `${y + 96}px`;
+					block.style.bottom = `${y}px`;
 					block.style.left = `${x}px`;
 					map.appendChild(block)
 				}
 				x += 48
 			}
-			x = 0;
-			y -= 48
+			x = 0; // return to the left
+			y += 48
 		}
 	},
 	setEnvironment: function() {
@@ -139,20 +139,20 @@ const Game = {
 
 		event.innerText = "No event";
 
-		block.aboveLeft = block.calcAboveLeft();
+		/*block.aboveLeft = block.calcAboveLeft();
 		block.aboveRight = block.calcAboveRight();
 		block.leftTop = block.calcLeftTop();
 		block.leftBottom = block.calcLeftBottom();
 		block.rightTop = block.calcRightTop();
-		block.rightBottom = block.calcRightBottom();
+		block.rightBottom = block.calcRightBottom();*/
 		block.belowLeft = block.calcBelowLeft();
 		block.belowRight = block.calcBelowRight();
 
-		if (!isDefined(block.leftTop) && !isDefined(block.leftBottom)) canMoveLeft = true;
-		if (!isDefined(block.rightTop) && !isDefined(block.rightBottom)) canMoveRight = true;
+		// if (!isDefined(block.leftTop) && !isDefined(block.leftBottom)) canMoveLeft = true;
+		// if (!isDefined(block.rightTop) && !isDefined(block.rightBottom)) canMoveRight = true;
 
 		// left movement event
-		if (dirLeft && canMoveLeft) {
+	/*	if (dirLeft && canMoveLeft) {
 			canMoveRight = true;
 			posX -= Player.speed;
 			// sprite direction
@@ -164,10 +164,10 @@ const Game = {
 				canMoveLeft = false;
 				if (posX % 1 !== 0) posX -= (posX % 1 - 1)
 			}
-		}
+		}*/
 
 		// right movement event
-		if (dirRight && canMoveRight) {
+		/*if (dirRight && canMoveRight) {
 			canMoveLeft = true;
 			posX += Player.speed;
 			// sprite direction
@@ -179,16 +179,16 @@ const Game = {
 				canMoveRight = false;
 				if (posX % 1 !== 0) posX -= (posX % 1)
 			}
-		}
+		}*/
 
 		// jump event
-		canJump = (!isDefined(block.aboveLeft) && !isDefined(block.aboveRight));
+		/*canJump = (!isDefined(block.aboveLeft) && !isDefined(block.aboveRight));
 		if (canJump && isJumping) {
 			event.innerText = "JUMPING";
 			posY += Player.fallSpeed
 		}
 		if (isJumping) Player.sprite.style.backgroundImage = "url(assets/entity/mario-jump.png)";
-		else Player.sprite.style.backgroundImage = "url(assets/entity/mario-idle.png)";
+		else Player.sprite.style.backgroundImage = "url(assets/entity/mario-idle.png)";*/
 
 		// reach jump top event
 		/*if (isJumping && (block.aboveLeft !== undefined || block.aboveRight !== undefined)) {
@@ -199,24 +199,20 @@ const Game = {
 		}*/
 
 		// fall event
-		isFalling = (!isJumping && !isDefined(block.belowLeft) && !isDefined(block.belowRight));
+		/*isFalling = (!isJumping && !isDefined(block.belowLeft) && !isDefined(block.belowRight));
 		if (isFalling && !isJumping) {
 			event.innerText = "FALLING";
-			posY -= Player.fallSpeed;
-		}
-
-		if (isFalling && (isDefined(block.belowLeft) != isDefined(block.belowRight))) {
-			console.log(isFalling)
-			// canMoveRight = true;
-			// isFalling = false
-		}
+			posY -= Player.fallSpeed
+		}*/
 
 		// debug
 		debug.innerHTML =
 			`<u>PosX:</u> ${posX.toFixed()}<br>
 			<u>PosY:</u> ${posY.toFixed()}<br>
 			<u>RawX:</u> ${rawX}<br>
-			<u>RawY:</u> ${rawY}<br>`;
+			<u>RawY:</u> ${rawY}<br>
+			<u>Right:</u> ${canMoveRight}<br>
+			<u>Left:</u> ${canMoveLeft}<br>`;
 
 		Player.sprite.style.bottom = `${rawY}px`;
 		Player.sprite.style.left = `${rawX}px`;
@@ -247,7 +243,7 @@ block = {
 	calcAboveLeft: function() {
 		document.querySelectorAll(".map .above-left").forEach(function(e) {e.classList.remove("above-left")});
 		let request = [
-			(-posY + 8.4).toFixed(),
+			(-posY + (lvl.length - 2.5)).toFixed(),
 			Math.floor(posX)
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("above-left")}
@@ -258,7 +254,7 @@ block = {
 	calcAboveRight: function() {
 		document.querySelectorAll(".map .above-right").forEach(function(e) {e.classList.remove("above-right")});
 		let request = [
-			(-posY + 8.4).toFixed(),
+			(-posY + (lvl.length - 2.5)).toFixed(),
 			Math.ceil(posX)
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("above-right")}
@@ -269,7 +265,7 @@ block = {
 	calcLeftTop: function() {
 		document.querySelectorAll(".map .left-top").forEach(function(e) {e.classList.remove("left-top")});
 		let request = [
-			Math.floor(-posY + 9),
+			Math.ceil(posY),
 			(posX - 0.6).toFixed()
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("left-top")}
@@ -280,18 +276,20 @@ block = {
 	calcLeftBottom: function() {
 		document.querySelectorAll(".map .left-bottom").forEach(function(e) {e.classList.remove("left-bottom")});
 		let request = [
-			Math.ceil(-posY + 8.9999),
+			Math.floor(posY - 0.0001),
 			(posX - 0.6).toFixed()
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("left-bottom")}
 		catch (e) {}
+		document.querySelector(".block.ground1")
 		return lvl[request[0]][request[1]]
 	},
 	rightTop: undefined,
 	calcRightTop: function() {
 		document.querySelectorAll(".map .right-top").forEach(function(e) {e.classList.remove("right-top")});
 		let request = [
-			Math.floor(-posY + 9),
+			(lvl.length - posY).toFixed(),
+			// Math.floor(posY),
 			(posX + 0.6).toFixed()
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("right-top")}
@@ -302,7 +300,7 @@ block = {
 	calcRightBottom: function() {
 		document.querySelectorAll(".map .right-bottom").forEach(function(e) {e.classList.remove("right-bottom")});
 		let request = [
-			Math.ceil(-posY + 8.9999),
+			Math.ceil(posY - 0.0001),
 			(posX + 0.6).toFixed()
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("right-bottom")}
@@ -313,7 +311,7 @@ block = {
 	calcBelowLeft: function() {
 		document.querySelectorAll(".map .below-left").forEach(function(e) {e.classList.remove("below-left")});
 		let request = [
-			(-posY + 9.5).toFixed(),
+			(lvl.length - posY).toFixed(),
 			Math.floor(posX)
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("below-left")}
@@ -324,7 +322,7 @@ block = {
 	calcBelowRight: function() {
 		document.querySelectorAll(".map .below-right").forEach(function(e) {e.classList.remove("below-right")});
 		let request = [
-			(-posY + 9.5).toFixed(),
+			(lvl.length - posY).toFixed(),
 			Math.ceil(posX)
 		];
 		try {document.querySelector(`.${lvl[request[0]][request[1]] + request[0] + request[1]}`).classList.add("below-right")}
@@ -374,8 +372,8 @@ const lvl = [
 	[0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M],
 	[0, 0, 0, 0, 0, 0, 0, Y, B, Y, B, 0, 0, 0, 0, 0, 0, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
-	[0, 0, 0, 0, 0, 0, M, 0, 0, M, 0, 0, 0, 0, 0, M, M, M, M, M, G, G, G, G, G, G, G, G, G],
-	[G, G, G, G, b, b, G, G, G, G, G, G, g, g, g, g, g, G, G, G, G, G, G, G, G, G, G, G, G],
+	[0, 0, 0, M, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, M, M, M, M, M, G, G, G, G, G, G, G, G, G],
+	[G, G, G, G, g, g, g, G, G, G, G, G, g, g, g, g, g, G, G, G, G, G, G, G, G, G, G, G, G],
 	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
 lvlRightBorder = (lvl[lvl.length - 1].length - 1); // equals to the length of the last row
