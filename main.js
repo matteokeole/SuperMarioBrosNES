@@ -53,21 +53,21 @@ const Game = {
 				class: "hill-1",
 				pos: 573
 		}];
-		// decorative bushes
+		// init decorative bushes
 		bushes.forEach(function(e) {
 			let bush = document.createElement("div");
 			bush.className = `bush ${e.class}`;
 			bush.style.left = `${e.pos}px`;
 			environment.appendChild(bush)
 		});
-		// moving clouds in the background
+		// init moving clouds in the background
 		clouds.forEach(function(e, i) {
 			let cloud = document.createElement("div");
 			cloud.className = `cloud ${e.class}`;
 			cloud.style.left = `${e.pos}px`;
 			environment.appendChild(cloud)
 		});
-		// decorative hills
+		// init decorative hills
 		hills.forEach(function(e) {
 			let hill = document.createElement("div");
 			hill.className = `hill ${e.class}`;
@@ -76,6 +76,7 @@ const Game = {
 		})
 	},
 	keydown: function(e) {
+		// user input (key down)
 		switch (e.keyCode) {
 			// left arrow, Q key
 			case 37:
@@ -89,12 +90,14 @@ const Game = {
 		}
 	},
 	keydownJump: function(e) {
+		// user spacebar input (key down)
 		if (e.keyCode === 32) {
 			canJump = false;
 			isJumping = true
 		}
 	},
 	keyup: function(e) {
+		// user input (key up)
 		switch (e.keyCode) {
 			// left arrow, Q key
 			case 37:
@@ -113,6 +116,7 @@ const Game = {
 		}
 	},
 	togglePauseMenu: function() {
+		// toggle pause menu display
 		if (pause.style.visibility === "hidden") {
 			// showing pause menu, blocking player control
 			paused = true;
@@ -126,7 +130,7 @@ const Game = {
 		}
 	},
 	unfreeze: function() {
-		// enable controls
+		// enable player input
 		if (!canLoop) {
 			document.addEventListener("keydown", Game.keydown);
 			(canJump) ? document.addEventListener("keydown", Game.keydownJump) : document.removeEventListener("keydown", Game.keydownJump); // jump handler
@@ -135,6 +139,7 @@ const Game = {
 		}
 	},
 	loop: function() {
+		// render function (Game.unfreeze() to start & loops until Game.freeze() is called)
 		canLoop = undefined;
 		Player.sprite.style.backgroundImage = "url(assets/entity/mario-idle.png)";
 
@@ -232,7 +237,7 @@ const Game = {
 		(Player.dead) ? Game.freeze() : Game.unfreeze()
 	},
 	freeze: function() {
-		// disable controls
+		// disable player input
 		if (canLoop) {
 			window.cancelAnimationFrame(canLoop);
 			canLoop = undefined
@@ -423,9 +428,9 @@ const lvl = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, Y, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, B, Y, B, Y, B, 0, 0, 0, 0, 0, 0, 0, M, M, G, G, 0, 0, 0, 0, 0, G, G],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, m, g, g, 0, 0, 0, 0, 0, G, G],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, m, g, g, g, G, G, G, G, G, G],
-	[G, G, G, G, G, G, G, G, G, G, G, G, 0, 0, 0, G, G, G, G, g, g, g, G, G, G, G, G, G, G],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, y, g, G, g, G, G, G, G, G, G],
+	[G, G, G, G, G, G, G, G, G, G, G, G, 0, 0, 0, G, G, G, G, g, g, g, g, G, G, G, G, G, G],
 	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
 lvlRightBorder = (lvl[lvl.length - 1].length - 1); // equals to the length of the last row
