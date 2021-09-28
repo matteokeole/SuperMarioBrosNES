@@ -3,7 +3,6 @@ const Game = {
 	u: 48,
 	setLevelPattern: function(lvl) {
 		// set a level by using a block pattern
-		// work only with 10-sized arrays!
 		let x = 0, y = 0;
 		for (let i = lvl.length - 1; i >= 0; i--) {
 			for (let j = 0; j < lvl[i].length; j++) {
@@ -92,6 +91,7 @@ const Game = {
 	keydownJump: function(e) {
 		// user spacebar input (key down)
 		if (e.keyCode === 32) {
+			jumpReleased = false;
 			canJump = false;
 			isJumping = true
 		}
@@ -111,8 +111,9 @@ const Game = {
 				break;
 			// spacebar
 			case 32:
-				isJumping = false;
-				canJump = true
+				jumpReleased = true;
+				canJump = true;
+				isJumping = false
 		}
 	},
 	togglePauseMenu: function() {
@@ -133,7 +134,12 @@ const Game = {
 		// enable player input
 		if (!canLoop) {
 			document.addEventListener("keydown", Game.keydown);
-			(canJump) ? document.addEventListener("keydown", Game.keydownJump) : document.removeEventListener("keydown", Game.keydownJump); // jump handler
+			// jump handler
+			if (canJump && jumpReleased) {
+				document.addEventListener("keydown", Game.keydownJump)
+			} else {
+				document.removeEventListener("keydown", Game.keydownJump)
+			}
 			document.addEventListener("keyup", Game.keyup);
 			canLoop = window.requestAnimationFrame(Game.loop)
 		}
@@ -194,11 +200,59 @@ const Game = {
 		canJump = (!isDefined(block.aboveLeft) && !isDefined(block.aboveRight));
 		if (canJump && isJumping) {
 			canJump = false;
-			posY += Player.jumpSpeedRaw
+			posY += Player.jumpSpeedRaw;
+			setTimeout(function() {isJumping = false}, 400)
 		}
 
-		// jump reach event
-		if (isJumping && (isDefined(block.aboveLeft) || isDefined(block.aboveRight))) isJumping = false;
+		// hit block while jumping event
+		if (isJumping && (isDefined(block.aboveLeft) || isDefined(block.aboveRight))) {
+			// if the block is a brick block or a mystery block, it gets animated (pop)
+			// case 1: the player hits 1 hittable block
+			let e;
+			if (hittableBlocks.test(block.aboveLeft) && !hittableBlocks.test(block.aboveRight)) {
+				// left collision with a brick block or mystery block
+				e = document.querySelector(`.${block.aboveLeft}`);
+				e.classList.add("pop");
+				setTimeout(function() {e.classList.remove("pop")}, 200);
+				// TO-DO: random item
+				if (e.classList.contains("mystery")) {
+					alert("ok")
+				}
+			}
+			if (!hittableBlocks.test(block.aboveLeft) && hittableBlocks.test(block.aboveRight)) {
+				// right collision with a brick block or mystery block
+				e = document.querySelector(`.${block.aboveRight}`);
+				e.classList.add("pop");
+				setTimeout(function() {e.classList.remove("pop")}, 200);
+				// TO-DO: random item
+				if (e.classList.contains("mystery")) {
+					alert("ok")
+				}
+			}
+			// case 2: the player hits 2 blocks but only 1 can be animated at a time so a choice must be made
+			if (hittableBlocks.test(block.aboveLeft) && hittableBlocks.test(block.aboveRight)) {
+				if ((rawX % Game.u) < (Game.u / 2)) {
+					// left collision with a brick block or mystery block
+					e = document.querySelector(`.${block.aboveLeft}`);
+					e.classList.add("pop");
+					setTimeout(function() {e.classList.remove("pop")}, 200);
+					// TO-DO: random item
+					if (e.classList.contains("mystery")) {
+						alert("ok")
+					}
+				} else if ((rawX % Game.u) >= (Game.u / 2)) {
+					// right collision with a brick block or mystery block
+					let e = document.querySelector(`.${block.aboveRight}`);
+					e.classList.add("pop");
+					setTimeout(function() {e.classList.remove("pop")}, 200);
+					// TO-DO: random item
+					if (e.classList.contains("mystery")) {
+						alert("ok")
+					}
+				}
+			}
+			isJumping = false
+		}
 
 		// fall event
 		isFalling = (!isJumping && !isDefined(block.belowLeft) && !isDefined(block.belowRight));
@@ -255,7 +309,7 @@ const Game = {
 },
 isDefined = function(e) {
 	// check if the targeted element is either empty, border or part of the environment
-	return !(e === 0 || e === undefined || e.includes("behind"))
+	return !(e[0] === "0" || e === undefined || e.includes("behind"))
 },
 block = {
 	// calculate collisions coming from above, left, right and below
@@ -264,10 +318,10 @@ block = {
 		let request = [
 			Math.ceil(lvl.length - posY - 2),
 			Math.floor(posX)
-		], query = lvl[request[0]][request[1]];
+		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
 			document.querySelectorAll(".map .above-left").forEach(function(e) {e.classList.remove("above-left")}); // removing old collision class
-			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("above-left")
+			document.querySelector(`.${query}`).classList.add("above-left")
 		} catch (e) {}
 		return query
 	},
@@ -276,10 +330,10 @@ block = {
 		let request = [
 			Math.ceil(lvl.length - posY - 2),
 			Math.ceil(posX)
-		], query = lvl[request[0]][request[1]];
+		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
 			document.querySelectorAll(".map .above-right").forEach(function(e) {e.classList.remove("above-right")}); // removing old collision class
-			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("above-right")
+			document.querySelector(`.${query}`).classList.add("above-right")
 		} catch (e) {}
 		return query
 	},
@@ -288,10 +342,10 @@ block = {
 		let request = [
 			Math.floor(lvl.length - posY - 1),
 			Math.ceil(posX - 1.2)
-		], query = lvl[request[0]][request[1]];
+		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
 			document.querySelectorAll(".map .left-top").forEach(function(e) {e.classList.remove("left-top")}); // removing old collision class
-			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("left-top")
+			document.querySelector(`.${query}`).classList.add("left-top")
 		} catch (e) {}
 		return query
 	},
@@ -300,10 +354,10 @@ block = {
 		let request = [
 			Math.ceil(lvl.length - posY - 1.01),
 			Math.ceil(posX - 1.2)
-		], query = lvl[request[0]][request[1]];
+		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
 			document.querySelectorAll(".map .left-bottom").forEach(function(e) {e.classList.remove("left-bottom")}); // removing old collision class
-			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("left-bottom")
+			document.querySelector(`.${query}`).classList.add("left-bottom")
 		} catch (e) {}
 		return query
 	},
@@ -312,10 +366,10 @@ block = {
 		let request = [
 			Math.floor(lvl.length - posY - 1),
 			Math.floor(posX + 1)
-		], query = lvl[request[0]][request[1]];
+		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
 			document.querySelectorAll(".map .right-top").forEach(function(e) {e.classList.remove("right-top")}); // removing old collision class
-			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("right-top")
+			document.querySelector(`.${query}`).classList.add("right-top")
 		} catch (e) {}
 		return query
 	},
@@ -324,10 +378,10 @@ block = {
 		let request = [
 			Math.ceil(lvl.length - posY - 1.01),
 			Math.floor(posX + 1)
-		], query = lvl[request[0]][request[1]];
+		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
 			document.querySelectorAll(".map .right-bottom").forEach(function(e) {e.classList.remove("right-bottom")}); // removing old collision class
-			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("right-bottom")
+			document.querySelector(`.${query}`).classList.add("right-bottom")
 		} catch (e) {}
 		return query
 	},
@@ -336,10 +390,10 @@ block = {
 		let request = [
 			Math.floor(lvl.length - posY),
 			Math.floor(posX)
-		], query = lvl[request[0]][request[1]];
+		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
 			document.querySelectorAll(".map .below-left").forEach(function(e) {e.classList.remove("below-left")}); // removing old collision class
-			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("below-left")
+			document.querySelector(`.${query}`).classList.add("below-left")
 		} catch (e) {}
 		return query
 	},
@@ -348,10 +402,10 @@ block = {
 		let request = [
 			Math.floor(lvl.length - posY),
 			Math.ceil(posX)
-		], query = lvl[request[0]][request[1]];
+		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
 			document.querySelectorAll(".map .below-right").forEach(function(e) {e.classList.remove("below-right")}); // removing old collision class
-			document.querySelector(`.${query}-${request[0]}-${request[1]}`).classList.add("below-right")
+			document.querySelector(`.${query}`).classList.add("below-right")
 		} catch (e) {}
 		return query
 	}
@@ -360,6 +414,7 @@ map = document.querySelector(".map"),
 environment = document.querySelector(".environment"),
 pause = document.querySelector(".pause"),
 debug = document.querySelector(".debug"),
+hittableBlocks = /(brick|mystery)/, // hittable blocks regexp
 // terrain textures
 G = "ground",
 g = "ground behind",
@@ -367,8 +422,8 @@ B = "brick",
 b = "brick behind",
 M = "metal",
 m = "metal behind",
-E = "empty",
-e = "empty behind",
+S = "steel",
+s = "steel behind",
 Y = "mystery",
 y = "mystery behind",
 H = "hidden",
@@ -376,9 +431,9 @@ Player = {
 	sprite: document.querySelector(".player"), // player element
 	speed: 6, // base speed
 	get speedRaw() {return (this.speed / Game.u)}, // raw speed
-	jumpSpeed: 8, // base jump speed
+	jumpSpeed: 6, // base jump speed
 	get jumpSpeedRaw() {return (this.jumpSpeed / Game.u)}, // raw jump speed
-	fallSpeed: 8, // base fall speed
+	fallSpeed: 6, // base fall speed
 	get fallSpeedRaw() {return (this.fallSpeed / Game.u)}, // raw fall speed
 	dead: false // is dead
 },
@@ -412,33 +467,37 @@ dirLeft, // left direction
 canMoveLeft = true, // can move to left
 dirRight, // right direction
 canMoveRight = true, // can move to right
+jumpReleased = true, // is spacebar released
 canJump = true, // can do a jump
 isJumping = false, // is jumping
 isFalling = false, // is falling
 posX = 2, // X start coord (based on the number of elements in the level row)
 posY = 2, // Y start coord (based on the number of elements in the level column)
-rawX, // X start coord (raw, * 48)
-rawY; // Y start coord (raw, * 48)
+rawX = (posX * Game.u), // X start coord (raw, * 48)
+rawY = (posY * Game.u); // Y start coord (raw, * 48)
 
 // init level pattern
+// all sub-arrays must have the same length!
 const lvl = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, E, 0, E, B, Y, B, Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, S, 0, S, B, Y, B, Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, Y, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, B, Y, B, Y, B, 0, 0, 0, 0, 0, 0, 0, M, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, y, g, G, g, G, G, G, G, G, G],
-	[G, G, G, G, G, G, G, G, G, G, G, G, 0, 0, 0, G, G, G, G, g, g, g, g, G, G, G, G, G, G],
-	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
+	[G, G, G, G, G, G, G, G, G, G, G, G, g, g, g, G, G, G, G, g, g, g, g, G, G, G, G, G, G],
+	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, g, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
-lvlRightBorder = (lvl[lvl.length - 1].length - 1); // equals to the length of the last row
+lvlRightBorder = (lvl[9].length - 1); // equals to the length of the last row
 
+Player.sprite.style.left = `${rawX}px`;
+Player.sprite.style.bottom = `${rawY}px`;
 // load level
 map.style.height = `${Game.u * lvl.length}px`;
 Game.setLevelPattern(lvl);
-// Game.setEnvironment();
+Game.setEnvironment();
 
 // pause menu
 document.addEventListener("keydown", function(e) {if (e.keyCode === 27) Game.togglePauseMenu()});
@@ -448,8 +507,8 @@ pause.addEventListener("mousedown", Game.togglePauseMenu);
 setTimeout(function() {
 	spawned = true;
 	if (!paused) Game.unfreeze()
-}, /*2000*/0)
+}, 1500)
 
-Game.togglePauseMenu();
+// Game.togglePauseMenu();
 
 let goomba1 = new Goomba(1, [12, 1], 1)

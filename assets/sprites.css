@@ -49,12 +49,31 @@ div.block {
 .block.ground {background-image: url(block/ground.png)}
 .block.brick {background-image: url(block/brick.png)}
 .block.metal {background-image: url(block/metal.png)}
-.block.empty {background-image: url(block/empty.png)}
+.block.steel {background-image: url(block/steel.png)}
 .block.hidden {background-image: url(block/hidden.png)}
 .block.mystery {background-image: url(block/mystery.png)}
 .block.behind {
 	opacity: 0.5;
 	box-shadow: inset 0 0 0 24px rgba(0, 0, 0, 0.2)
+}
+.block.pop {
+	-webkit-animation-name: pop;
+	-webkit-animation-duration: 0.2s;
+	-webkit-animation-timing-function: linear;
+	animation-name: pop;
+	animation-duration: 0.2s;
+	animation-timing-function: linear
+}
+
+@-webkit-keyframes pop {
+	30% {-webkit-transform: translateY(-16px)}
+	40% {-webkit-transform: translateY(-24px)}
+	90%, 100% {-webkit-transform: translateY(0)}
+}
+@keyframes pop {
+	30% {transform: translateY(-16px)}
+	40% {transform: translateY(-24px)}
+	90%, 100% {transform: translateY(0)}
 }
 
 /* warp pipes */
@@ -157,51 +176,69 @@ div.block {
 .player {
 	width: 48px;
 	height: 48px;
-	bottom: 96px;
-	left: 96px;
 	position: absolute;
 	background-image: url(entity/mario.png);
 	background-size: 100%;
-	/*-webkit-animation-name: playerSpawn;*/
+	-webkit-animation-name: playerSpawn;
 	-webkit-animation-duration: 1.5s;
 	-webkit-animation-timing-function: linear;
-	/*animation-name: playerSpawn;*/
+	animation-name: playerSpawn;
 	animation-duration: 1.5s;
 	animation-timing-function: linear;
 	z-index: 2
 }
 
 @-webkit-keyframes playerSpawn {
-	0%, 79.99% {z-index: -1}
-	80% {
+	0%, 49.99% {z-index: -1}
+	50% {
 		bottom: 192px;
 		z-index: 2
 	}
 	100% {bottom: 96px}
 }
-
 @keyframes playerSpawn {
-	0%, 79.99% {z-index: -1}
-	80% {
+	0%, 49.99% {z-index: -1}
+	50% {
 		bottom: 192px;
 		z-index: 2
 	}
 	100% {bottom: 96px}
 }
 
+@-webkit-keyframes playerDeathFall {
+	0%, 100% {visibility: visible}
+	50% {bottom: -48px}
+	100% {
+		bottom: 96px;
+		background-image: url(entity/mario-jump.png)
+	}
+}
 @keyframes playerDeathFall {
 	0%, 100% {visibility: visible}
 	50% {bottom: -48px}
 	100% {
 		bottom: 96px;
-		background-image: url(entity/goomba.png)
+		background-image: url(entity/mario-jump.png)
 	}
 }
 
+@-webkit-keyframes playerDeath {
+	0%, 100% {
+		visibility: visible;
+		background-image: url(entity/mario-jump.png)
+	}
+	0% {bottom: 96px}
+	15% {bottom: 180px}
+	25% {bottom: 215px}
+	40% {bottom: 240px}
+	55% {bottom: 215px}
+	70% {bottom: 140px}
+	90%, 100% {bottom: -48px}
+}
 @keyframes playerDeath {
 	0%, 100% {
 		visibility: visible;
-		background-image: url(entity/goomba.png)
+		background-image: url(entity/mario-jump.png)
 	}
 	0% {bottom: 96px}
 	15% {bottom: 180px}
@@ -228,7 +265,6 @@ div.block {
 	0%, 50% {-webkit-transform: rotateY(0)}
 	49%, 0% {-webkit-transform: rotateY(180deg)}
 }
-
 @keyframes goombaIdle {
 	0%, 50% {transform: rotateY(0)}
 	49%, 0% {transform: rotateY(180deg)}
