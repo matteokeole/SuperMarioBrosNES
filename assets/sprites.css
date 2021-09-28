@@ -203,27 +203,13 @@ div.block {
 		visibility: visible;
 		background-image: url(entity/goomba.png)
 	}
-	0% {
-		bottom: 96px
-	}
-	15% {
-		bottom: 180px
-	}
-	25% {
-		bottom: 215px
-	}
-	40% {
-		bottom: 240px
-	}
-	55% {
-		bottom: 215px
-	}
-	70% {
-		bottom: 140px
-	}
-	90%, 100% {
-		bottom: -48px
-	}
+	0% {bottom: 96px}
+	15% {bottom: 180px}
+	25% {bottom: 215px}
+	40% {bottom: 240px}
+	55% {bottom: 215px}
+	70% {bottom: 140px}
+	90%, 100% {bottom: -48px}
 }
 
 /* goomba sprite */
@@ -234,8 +220,8 @@ div.block {
 	position: absolute;
 	background-image: url(entity/goomba.png);
 	background-size: 100%;
-	/*-webkit-animation: goombaIdle .5s infinite, goomba_walk 5s infinite linear;*/
-	/*animation: goombaIdle .5s infinite, goomba_walk 5s infinite linear*/
+	-webkit-animation: goombaIdle .5s infinite, goomba_walk 5s infinite linear;
+	animation: goombaIdle .5s infinite, goomba_walk 5s infinite linear
 }
 
 @-webkit-keyframes goombaIdle {

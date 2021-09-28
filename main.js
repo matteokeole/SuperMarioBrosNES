@@ -415,8 +415,7 @@ posY = 2, // Y start coord (based on the number of elements in the level column)
 rawX, // X start coord (raw, * 48)
 rawY; // Y start coord (raw, * 48)
 
-// init level
-// level pattern
+// init level pattern
 const lvl = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -425,8 +424,8 @@ const lvl = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, Y, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, B, Y, B, Y, B, 0, 0, 0, 0, 0, 0, 0, M, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, m, g, g, 0, 0, 0, 0, 0, G, G],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, m, g, G, G, G, G, G, G, G, G],
-	[G, G, G, G, G, G, G, G, G, G, G, G, 0, 0, 0, G, G, G, G, g, g, G, G, G, G, G, G, G, G],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, m, g, g, g, G, G, G, G, G, G],
+	[G, G, G, G, G, G, G, G, G, G, G, G, 0, 0, 0, G, G, G, G, g, g, g, G, G, G, G, G, G, G],
 	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
 lvlRightBorder = (lvl[lvl.length - 1].length - 1); // equals to the length of the last row
