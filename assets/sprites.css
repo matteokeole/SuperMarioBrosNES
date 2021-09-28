@@ -25,11 +25,15 @@ section.pause {
 	z-index: 3
 }
 
-.map {position: relative}
+.map {
+	position: relative;
+	z-index: 1
+}
 
 .environment {
 	position: relative;
-	background-color: #a1adff
+	background-color: #a1adff;
+	z-index: 0
 }
 
 /* blocks */
@@ -61,8 +65,7 @@ div.block {
 	left: 66px;
 	position: absolute;
 	background-image: url(warp-pipe.png);
-	background-size: 100%;
-	z-index: -1
+	background-size: 100%
 }
 
 /* environment */
@@ -159,13 +162,17 @@ div.block {
 	position: absolute;
 	background-image: url(entity/mario.png);
 	background-size: 100%;
-	/*-webkit-animation: playerSpawn 1.5s linear;*/
-	/*animation: playerSpawn 1.5s linear;*/
+	/*-webkit-animation-name: playerSpawn;*/
+	-webkit-animation-duration: 1.5s;
+	-webkit-animation-timing-function: linear;
+	/*animation-name: playerSpawn;*/
+	animation-duration: 1.5s;
+	animation-timing-function: linear;
 	z-index: 2
 }
 
 @-webkit-keyframes playerSpawn {
-	0%, 79.999% {z-index: -1}
+	0%, 79.99% {z-index: -1}
 	80% {
 		bottom: 192px;
 		z-index: 2
@@ -174,7 +181,7 @@ div.block {
 }
 
 @keyframes playerSpawn {
-	0%, 79.999% {z-index: -1}
+	0%, 79.99% {z-index: -1}
 	80% {
 		bottom: 192px;
 		z-index: 2
@@ -182,13 +189,41 @@ div.block {
 	100% {bottom: 96px}
 }
 
-@keyframes playerFall {
-	/*100% {background-color: red;}*/
-	0%, 29.999% {bottom: -48px}
-	30%, 69.999% {
-		bottom: 192px
+@keyframes playerDeathFall {
+	0%, 100% {visibility: visible}
+	50% {bottom: -48px}
+	100% {
+		bottom: 96px;
+		background-image: url(entity/goomba.png)
 	}
-	70%, 100% {bottom: -48px}
+}
+
+@keyframes playerDeath {
+	0%, 100% {
+		visibility: visible;
+		background-image: url(entity/goomba.png)
+	}
+	0% {
+		bottom: 96px
+	}
+	15% {
+		bottom: 180px
+	}
+	25% {
+		bottom: 215px
+	}
+	40% {
+		bottom: 240px
+	}
+	55% {
+		bottom: 215px
+	}
+	70% {
+		bottom: 140px
+	}
+	90%, 100% {
+		bottom: -48px
+	}
 }
 
 /* goomba sprite */
@@ -196,14 +231,11 @@ div.block {
 .goomba {
 	width: 48px;
 	height: 48px;
-	bottom: 96px;
-	left: 240px;
 	position: absolute;
 	background-image: url(entity/goomba.png);
 	background-size: 100%;
-	-webkit-animation: goombaIdle .5s infinite, goomba_walk 5s infinite linear;
-	animation: goombaIdle .5s infinite, goomba_walk 5s infinite linear;
-	z-index: 10
+	/*-webkit-animation: goombaIdle .5s infinite, goomba_walk 5s infinite linear;*/
+	/*animation: goombaIdle .5s infinite, goomba_walk 5s infinite linear*/
 }
 
 @-webkit-keyframes goombaIdle {
@@ -214,18 +246,6 @@ div.block {
 @keyframes goombaIdle {
 	0%, 50% {transform: rotateY(0)}
 	49%, 0% {transform: rotateY(180deg)}
-}
-
-@-webkit-keyframes goombaWalk {
-	0% {left: 240px}
-	50% {left: 480px}
-	100% {left: 240px}
-}
-
-@keyframes goombaWalk {
-	0% {left: 240px}
-	50% {left: 480px}
-	100% {left: 240px}
 }
 
 /* paused element */
