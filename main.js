@@ -284,10 +284,10 @@ const Game = {
 		}
 
 		debug.innerHTML =
-			`<u>PosX:</u> ${posX.toFixed()}<br>
-			<u>RawX:</u> ${rawX}<br><br>
-			<u>PosY:</u> ${posY.toFixed()}<br>
-			<u>RawY:</u> ${rawY}<br>`;
+			`<span>PosX:</span> ${posX.toFixed()}<br>
+			<span>RawX:</span> ${rawX}<br><br>
+			<span>PosY:</span> ${posY.toFixed()}<br>
+			<span>RawY:</span> ${rawY}<br>`;
 		(Player.dead) ? Game.freeze() : Game.unfreeze()
 	},
 	freeze: function() {
@@ -471,8 +471,8 @@ jumpReleased = true, // is spacebar released
 canJump = true, // can do a jump
 isJumping = false, // is jumping
 isFalling = false, // is falling
-posX = 2, // X start coord (based on the number of elements in the level row)
-posY = 2, // Y start coord (based on the number of elements in the level column)
+posX = 1.5, // X start coord (based on the number of elements in the level row)
+posY = 4, // Y start coord (based on the number of elements in the level column)
 rawX = (posX * Game.u), // X start coord (raw, * 48)
 rawY = (posY * Game.u); // Y start coord (raw, * 48)
 
@@ -485,8 +485,8 @@ const lvl = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, Y, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, B, Y, B, Y, B, 0, 0, 0, 0, 0, 0, 0, M, M, G, G, 0, 0, 0, 0, 0, G, G],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, y, g, G, g, G, G, G, G, G, G],
+	[0, H, H, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
+	[0, H, H, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, y, g, G, g, G, G, G, G, G, G],
 	[G, G, G, G, G, G, G, G, G, G, G, G, g, g, g, G, G, G, G, g, g, g, g, G, G, G, G, G, G],
 	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, g, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
@@ -507,7 +507,7 @@ pause.addEventListener("mousedown", Game.togglePauseMenu);
 setTimeout(function() {
 	spawned = true;
 	if (!paused) Game.unfreeze()
-}, 1500)
+}, 1000)
 
 // Game.togglePauseMenu();
 
