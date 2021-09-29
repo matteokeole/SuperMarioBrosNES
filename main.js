@@ -506,6 +506,7 @@ pause.addEventListener("mousedown", Game.togglePauseMenu);
 // unfreeze after spawn animation
 setTimeout(function() {
 	spawned = true;
+	debug.style.display = "block";
 	if (!paused) Game.unfreeze()
 }, 1000)
 
