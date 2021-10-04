@@ -16,7 +16,7 @@ html, body {
 }
 
 /* Pause menu */
-section.pause {
+.pause {
 	width: 100%;
 	height: 100%;
 	margin: 0 auto;
@@ -48,7 +48,7 @@ section.pause {
 
 /* Blocks */
 
-div.block {
+.block {
 	width: 48px;
 	height: 48px;
 	position: absolute;
