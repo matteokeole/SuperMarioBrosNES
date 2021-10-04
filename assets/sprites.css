@@ -25,7 +25,7 @@ section.pause {
 	bottom: 0;
 	left: 0;
 	position: fixed;
-	background: rgba(0, 0, 0, 0.5) url(textures/menu.png) center 25% no-repeat;
+	background: rgba(0, 0, 0, 0.5) url(textures/title.png) center 25% no-repeat;
 	background-size: 528px 261px;
 	z-index: 3
 }
