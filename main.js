@@ -166,37 +166,64 @@ const Game = {
 		if (!isDefined(block.rightTop) && !isDefined(block.rightBottom)) canMoveRight = true;
 
 		// left movement event
-		if (dirLeft && canMoveLeft) {
-			canMoveRight = true;
-			posX -= Player.speedRaw;
-			// sprite direction
+		if (dirLeft) {
+			// sprite animation & direction
+			Player.sprite.style["-webkit-animation-name"] = "playerWalk";
+			Player.sprite.style["-webkit-animation-duration"] = "0.3s";
+			Player.sprite.style["animationIterationCount"] = "infinite";
+			Player.sprite.style.animationName = "playerWalk";
+			Player.sprite.style.animationDuration = "0.3s";
+			Player.sprite.style.animationIterationCount = "infinite";
 			Player.sprite.style["-webkit-transform"] = "rotateY(180deg)";
 			Player.sprite.style.transform = "rotateY(180deg)";
-			// searching for collisions
-			if (posX <= 0) posX = 0; // border collision
-			if (isDefined(block.leftTop) || isDefined(block.leftBottom)) {
-				canMoveLeft = false;
-				if (posX % 1 !== 0) posX -= (posX % 1) - 1 // avoid sticking
+			if (canMoveLeft) {
+				canMoveRight = true;
+				posX -= Player.speedRaw;
+				// searching for collisions
+				if (posX <= 0) posX = 0; // border collision
+				if (isDefined(block.leftTop) || isDefined(block.leftBottom)) {
+					canMoveLeft = false;
+					if (posX % 1 !== 0) posX -= (posX % 1) - 1 // avoid sticking
+				}
 			}
 		}
 
 		// right movement event
-		if (dirRight && canMoveRight) {
-			canMoveLeft = true;
-			posX += Player.speedRaw;
-			// sprite direction
+		if (dirRight) {
+			// sprite animation & direction
+			Player.sprite.style["-webkit-animation-name"] = "playerWalk";
+			Player.sprite.style["-webkit-animation-duration"] = "0.3s";
+			Player.sprite.style["animationIterationCount"] = "infinite";
+			Player.sprite.style.animationName = "playerWalk";
+			Player.sprite.style.animationDuration = "0.3s";
+			Player.sprite.style.animationIterationCount = "infinite";
 			Player.sprite.style["-webkit-transform"] = "rotateY(0)";
 			Player.sprite.style.transform = "rotateY(0)";
-			// searching for collisions
-			if (posX >= lvlRightBorder) posX = lvlRightBorder; // border collision
-			if (isDefined(block.rightTop) || isDefined(block.rightBottom)) {
-				canMoveRight = false;
-				if (posX % 1 !== 0) posX -= (posX % 1) // avoid sticking
+			if (canMoveRight) {
+				canMoveLeft = true;
+				posX += Player.speedRaw;
+				// searching for collisions
+				if (posX >= lvlRightBorder) posX = lvlRightBorder; // border collision
+				if (isDefined(block.rightTop) || isDefined(block.rightBottom)) {
+					canMoveRight = false;
+					if (posX % 1 !== 0) posX -= (posX % 1) // avoid sticking
+				}
 			}
 		}
 
+		// idle event
+		if (!dirLeft && !dirRight) {
+			Player.sprite.style["animationIterationCount"] = 1;
+			Player.sprite.style.animationIterationCount = 1;
+			Player.sprite.style.backgroundImage = "url(assets/entity/mario-idle.png)"
+		}
+
 		// jump event
-		if (isJumping) Player.sprite.style.backgroundImage = "url(assets/entity/mario-jump.png)";
+		if (!jumpReleased || isJumping || isFalling) {
+			Player.sprite.style["animationIterationCount"] = 1;
+			Player.sprite.style.animationIterationCount = 1;
+			Player.sprite.style.backgroundImage = "url(assets/entity/mario-jump.png)"
+		}
 		canJump = (!isDefined(block.aboveLeft) && !isDefined(block.aboveRight));
 		if (canJump && isJumping) {
 			canJump = false;
@@ -214,20 +241,14 @@ const Game = {
 				e = document.querySelector(`.${block.aboveLeft}`);
 				e.classList.add("pop");
 				setTimeout(function() {e.classList.remove("pop")}, 200);
-				// TO-DO: random item
-				if (e.classList.contains("mystery")) {
-					alert("ok")
-				}
+				if (e.classList.contains("mystery")) giveItem(block.aboveLeft)
 			}
 			if (!hittableBlocks.test(block.aboveLeft) && hittableBlocks.test(block.aboveRight)) {
 				// right collision with a brick block or mystery block
 				e = document.querySelector(`.${block.aboveRight}`);
 				e.classList.add("pop");
 				setTimeout(function() {e.classList.remove("pop")}, 200);
-				// TO-DO: random item
-				if (e.classList.contains("mystery")) {
-					alert("ok")
-				}
+				if (e.classList.contains("mystery")) giveItem(block.aboveRight)
 			}
 			// case 2: the player hits 2 blocks but only 1 can be animated at a time so a choice must be made
 			if (hittableBlocks.test(block.aboveLeft) && hittableBlocks.test(block.aboveRight)) {
@@ -236,19 +257,15 @@ const Game = {
 					e = document.querySelector(`.${block.aboveLeft}`);
 					e.classList.add("pop");
 					setTimeout(function() {e.classList.remove("pop")}, 200);
-					// TO-DO: random item
-					if (e.classList.contains("mystery")) {
-						alert("ok")
-					}
+					if (e.classList.contains("mystery")) giveItem(block.aboveLeft)
+
 				} else if ((rawX % Game.u) >= (Game.u / 2)) {
 					// right collision with a brick block or mystery block
-					let e = document.querySelector(`.${block.aboveRight}`);
+					e = document.querySelector(`.${block.aboveRight}`);
 					e.classList.add("pop");
 					setTimeout(function() {e.classList.remove("pop")}, 200);
-					// TO-DO: random item
-					if (e.classList.contains("mystery")) {
-						alert("ok")
-					}
+					if (e.classList.contains("mystery")) giveItem(block.aboveRight)
+
 				}
 			}
 			isJumping = false
@@ -302,8 +319,16 @@ const Game = {
 		// death function
 		if (Player.dead) {
 			Player.sprite.style.visibility = "hidden";
-			Player.sprite.style.animation = "playerDeathFall 0.5s linear";
-			setTimeout(function() {Player.sprite.style.animation = `playerDeath 1.25s linear`}, 500)
+			Player.sprite.style["-webkit-animationName"] = "playerDeathFall";
+			Player.sprite.style["-webkit-animationDuration"] = "0.5s";
+			Player.sprite.style.animationName = "playerDeathFall";
+			Player.sprite.style.animationDuration = "0.5s";
+			setTimeout(function() {
+				Player.sprite.style["animationName"] = "playerDeath";
+				Player.sprite.style["animationDuration"] = "1.25s"
+				Player.sprite.style.animationName = "playerDeath";
+				Player.sprite.style.animationDuration = "1.25s"
+			}, 500)
 		}
 	}
 },
@@ -410,6 +435,14 @@ block = {
 		return query
 	}
 },
+giveItem = function(e) {
+	// change the hit mystery blocks by steel blocks
+	let indexes = /\d+-\d+/g.exec(e)[0];
+	indexes = indexes.split("-");
+	lvl[indexes[0]][indexes[1]] = "steel"; // replace the array element by "steel"
+	let block = document.querySelector(`.${e}`); // get the element with the array coords
+	block.className = block.className.replace(/mystery/g, "steel") // replace the classes that contain "mystery" by "steel"
+},
 map = document.querySelector(".map"),
 environment = document.querySelector(".environment"),
 pause = document.querySelector(".pause"),
@@ -481,12 +514,22 @@ rawY = (posY * Game.u); // Y start coord (raw, * 48)
 const lvl = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, S, 0, S, B, Y, B, Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, Y, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	// the lines above ensure the jump limit, must not be removed
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	// the lines above are used to make the window higher, can be removed
+	[0, 0, 0, 0, 0, 0, S, 0, S, B, Y, B, Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Y, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, 0, 0, 0, B, Y, B, Y, B, 0, 0, 0, 0, 0, 0, 0, M, M, G, G, 0, 0, 0, 0, 0, G, G],
-	[0, H, H, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, G, G, 0, 0, 0, 0, 0, G, G],
-	[0, H, H, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, y, g, G, g, G, G, G, G, G, G],
+	[0, H, H, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, Y, G, G, g, G, G, G, G, G, G],
+	[0, H, H, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, g, g, g, g, G, G, G, G, G, G],
 	[G, G, G, G, G, G, G, G, G, G, G, G, g, g, g, G, G, G, G, g, g, g, g, G, G, G, G, G, G],
 	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, g, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
@@ -506,10 +549,7 @@ pause.addEventListener("mousedown", Game.togglePauseMenu);
 // unfreeze after spawn animation
 setTimeout(function() {
 	spawned = true;
-	debug.style.display = "block";
 	if (!paused) Game.unfreeze()
 }, 1000)
-
-// Game.togglePauseMenu();
 
 let goomba1 = new Goomba(1, [12, 1], 1)

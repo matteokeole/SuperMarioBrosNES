@@ -12,12 +12,12 @@
 		<link rel="stylesheet" href="assets/sprites.css">
 		<style type="text/css"> 
 			.debug {
-				display: none;
 				margin: 10px;
 				padding: 10px;
 				position: fixed;
 				background-color: rgba(0, 0, 0, 0.5);
-				color: #bbb
+				color: #bbb;
+				z-index: 10
 			}
 			.debug span {color: #fff}
 
@@ -42,10 +42,10 @@
 		<div class="debug"></div>
 
 		<section class="map">
+			<section class="environment"></section>
 			<div class="player"></div>
 			<div class="pipe"></div>
 		</section>
-		<section class="environment"></section>
 		<section class="pause"></section>
 
 		<script src="main.js"></script>
