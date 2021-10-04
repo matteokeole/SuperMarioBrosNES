@@ -1,27 +1,27 @@
-// init
+// Init
 const Game = {
 	u: 48,
 	setLevelPattern: function(lvl) {
-		// set a level by using a block pattern
+		// Generate a level with a block pattern
 		let x = 0, y = 0;
 		for (let i = lvl.length - 1; i >= 0; i--) {
 			for (let j = 0; j < lvl[i].length; j++) {
 				if (lvl[i][j] !== 0) {
-					// ignores a blocks
+					// Ignore air blocks
 					let block = document.createElement("div");
 					block.className = `block ${lvl[i][j]} ${lvl[i][j]}-${i}-${j}`;
 					block.style.bottom = `${y}px`;
 					block.style.left = `${x}px`;
 					map.appendChild(block)
 				}
-				x += Game.u // next element
+				x += Game.u // Next element in the row
 			}
-			x = 0; // return to the start of the row
-			y += Game.u // next column
+			x = 0; // Row beginning
+			y += Game.u // Next column
 		}
 	},
 	setEnvironment: function() {
-		// add decorative elements
+		// Generate decorative elements in the background
 		bushes = [{
 				class: "bush-3",
 				pos: 6
@@ -52,21 +52,21 @@ const Game = {
 				class: "hill-1",
 				pos: 573
 		}];
-		// init decorative bushes
+		// Decorative bushes
 		bushes.forEach(function(e) {
 			let bush = document.createElement("div");
 			bush.className = `bush ${e.class}`;
 			bush.style.left = `${e.pos}px`;
 			environment.appendChild(bush)
 		});
-		// init moving clouds in the background
+		// Moving clouds
 		clouds.forEach(function(e, i) {
 			let cloud = document.createElement("div");
 			cloud.className = `cloud ${e.class}`;
 			cloud.style.left = `${e.pos}px`;
 			environment.appendChild(cloud)
 		});
-		// init decorative hills
+		// Decorative hills
 		hills.forEach(function(e) {
 			let hill = document.createElement("div");
 			hill.className = `hill ${e.class}`;
@@ -75,21 +75,21 @@ const Game = {
 		})
 	},
 	keydown: function(e) {
-		// user input (key down)
+		// User key down input
 		switch (e.keyCode) {
-			// left arrow, Q key
+			// Left arrow, Q key
 			case 37:
 			case 81:
 				dirLeft = true;
 				break;
-			// right arrow, D key
+			// Right arrow, D key
 			case 39:
 			case 68:
 				dirRight = true
 		}
 	},
 	keydownJump: function(e) {
-		// user spacebar input (key down)
+		// User key down spacebar input
 		if (e.keyCode === 32) {
 			jumpReleased = false;
 			canJump = false;
@@ -97,19 +97,19 @@ const Game = {
 		}
 	},
 	keyup: function(e) {
-		// user input (key up)
+		// User key up input
 		switch (e.keyCode) {
-			// left arrow, Q key
+			// Left arrow, Q key
 			case 37:
 			case 81:
 				dirLeft = false;
 				break;
-			// right arrow, D key
+			// Right arrow, D key
 			case 39:
 			case 68:
 				dirRight = false;
 				break;
-			// spacebar
+			// Spacebar
 			case 32:
 				jumpReleased = true;
 				canJump = true;
@@ -117,24 +117,24 @@ const Game = {
 		}
 	},
 	togglePauseMenu: function() {
-		// toggle pause menu display
+		// Toggle pause menu display
 		if (pause.style.visibility === "hidden") {
-			// showing pause menu, blocking player control
+			// Show pause menu & block player control
 			paused = true;
 			Game.freeze();
 			pause.style.visibility = "visible"
 		} else {
-			// hiding pause menu, allowing player control
+			// Hide pause menu & allow player control
 			paused = false;
 			if (spawned) Game.unfreeze();
 			pause.style.visibility = "hidden"
 		}
 	},
 	unfreeze: function() {
-		// enable player input
+		// Enable player input
 		if (!canLoop) {
 			document.addEventListener("keydown", Game.keydown);
-			// jump handler
+			// Jump handler
 			if (canJump && jumpReleased) {
 				document.addEventListener("keydown", Game.keydownJump)
 			} else {
@@ -145,9 +145,9 @@ const Game = {
 		}
 	},
 	loop: function() {
-		// render function (Game.unfreeze() to start & loops until Game.freeze() is called)
+		// Render function (started by Game.unfreeze() and ended by Game.freeze())
 		canLoop = undefined;
-		Player.sprite.style.backgroundImage = "url(assets/entity/mario-idle.png)";
+		Player.sprite.style.backgroundImage = "url(assets/textures/entity/mario-idle.png)";
 
 		rawX = (Game.u * posX).toFixed();
 		rawY = (Game.u * posY).toFixed();
@@ -161,13 +161,13 @@ const Game = {
 		block.belowLeft = block.calcBelowLeft();
 		block.belowRight = block.calcBelowRight();
 
-		// movement handlers
+		// Movement handlers
 		if (!isDefined(block.leftTop) && !isDefined(block.leftBottom)) canMoveLeft = true;
 		if (!isDefined(block.rightTop) && !isDefined(block.rightBottom)) canMoveRight = true;
 
-		// left movement event
+		// Left movement event
 		if (dirLeft) {
-			// sprite animation & direction
+			// Sprite animation & direction
 			Player.sprite.style["-webkit-animation-name"] = "playerWalk";
 			Player.sprite.style["-webkit-animation-duration"] = "0.3s";
 			Player.sprite.style["animationIterationCount"] = "infinite";
@@ -179,18 +179,18 @@ const Game = {
 			if (canMoveLeft) {
 				canMoveRight = true;
 				posX -= Player.speedRaw;
-				// searching for collisions
-				if (posX <= 0) posX = 0; // border collision
+				// Looking for collisions
+				if (posX <= 0) posX = 0; // Border collision
 				if (isDefined(block.leftTop) || isDefined(block.leftBottom)) {
 					canMoveLeft = false;
-					if (posX % 1 !== 0) posX -= (posX % 1) - 1 // avoid sticking
+					if (posX % 1 !== 0) posX -= (posX % 1) - 1 // Avoid sticking
 				}
 			}
 		}
 
-		// right movement event
+		// Right movement event
 		if (dirRight) {
-			// sprite animation & direction
+			// Sprite animation & direction
 			Player.sprite.style["-webkit-animation-name"] = "playerWalk";
 			Player.sprite.style["-webkit-animation-duration"] = "0.3s";
 			Player.sprite.style["animationIterationCount"] = "infinite";
@@ -202,27 +202,27 @@ const Game = {
 			if (canMoveRight) {
 				canMoveLeft = true;
 				posX += Player.speedRaw;
-				// searching for collisions
-				if (posX >= lvlRightBorder) posX = lvlRightBorder; // border collision
+				// Looking for collisions
+				if (posX >= lvlRightBorder) posX = lvlRightBorder; // Border collision
 				if (isDefined(block.rightTop) || isDefined(block.rightBottom)) {
 					canMoveRight = false;
-					if (posX % 1 !== 0) posX -= (posX % 1) // avoid sticking
+					if (posX % 1 !== 0) posX -= (posX % 1) // Avoid sticking
 				}
 			}
 		}
 
-		// idle event
+		// Idle event
 		if (!dirLeft && !dirRight) {
 			Player.sprite.style["animationIterationCount"] = 1;
 			Player.sprite.style.animationIterationCount = 1;
-			Player.sprite.style.backgroundImage = "url(assets/entity/mario-idle.png)"
+			Player.sprite.style.backgroundImage = "url(assets/textures/entity/mario-idle.png)"
 		}
 
-		// jump event
+		// Jump event
 		if (!jumpReleased || isJumping || isFalling) {
 			Player.sprite.style["animationIterationCount"] = 1;
 			Player.sprite.style.animationIterationCount = 1;
-			Player.sprite.style.backgroundImage = "url(assets/entity/mario-jump.png)"
+			Player.sprite.style.backgroundImage = "url(assets/textures/entity/mario-jump.png)"
 		}
 		canJump = (!isDefined(block.aboveLeft) && !isDefined(block.aboveRight));
 		if (canJump && isJumping) {
@@ -231,36 +231,36 @@ const Game = {
 			setTimeout(function() {isJumping = false}, 400)
 		}
 
-		// hit block while jumping event
+		// Hit block while jumping event
 		if (isJumping && (isDefined(block.aboveLeft) || isDefined(block.aboveRight))) {
-			// if the block is a brick block or a mystery block, it gets animated (pop)
-			// case 1: the player hits 1 hittable block
+			// If the block is a brick block or a mystery block, it gets animated (pop keyframe)
+			// Case 1: the player hits 1 hittable block
 			let e;
 			if (hittableBlocks.test(block.aboveLeft) && !hittableBlocks.test(block.aboveRight)) {
-				// left collision with a brick block or mystery block
+				// Left collision with a brick block or mystery block
 				e = document.querySelector(`.${block.aboveLeft}`);
 				e.classList.add("pop");
 				setTimeout(function() {e.classList.remove("pop")}, 200);
 				if (e.classList.contains("mystery")) giveItem(block.aboveLeft)
 			}
 			if (!hittableBlocks.test(block.aboveLeft) && hittableBlocks.test(block.aboveRight)) {
-				// right collision with a brick block or mystery block
+				// Right collision with a brick block or mystery block
 				e = document.querySelector(`.${block.aboveRight}`);
 				e.classList.add("pop");
 				setTimeout(function() {e.classList.remove("pop")}, 200);
 				if (e.classList.contains("mystery")) giveItem(block.aboveRight)
 			}
-			// case 2: the player hits 2 blocks but only 1 can be animated at a time so a choice must be made
+			// Case 2: the player hits 2 blocks but only 1 can be animated at a time so a choice must be made
 			if (hittableBlocks.test(block.aboveLeft) && hittableBlocks.test(block.aboveRight)) {
 				if ((rawX % Game.u) < (Game.u / 2)) {
-					// left collision with a brick block or mystery block
+					// Left collision with a brick block or mystery block
 					e = document.querySelector(`.${block.aboveLeft}`);
 					e.classList.add("pop");
 					setTimeout(function() {e.classList.remove("pop")}, 200);
 					if (e.classList.contains("mystery")) giveItem(block.aboveLeft)
 
 				} else if ((rawX % Game.u) >= (Game.u / 2)) {
-					// right collision with a brick block or mystery block
+					// Right collision with a brick block or mystery block
 					e = document.querySelector(`.${block.aboveRight}`);
 					e.classList.add("pop");
 					setTimeout(function() {e.classList.remove("pop")}, 200);
@@ -271,7 +271,7 @@ const Game = {
 			isJumping = false
 		}
 
-		// fall event
+		// Fall event
 		isFalling = (!isJumping && !isDefined(block.belowLeft) && !isDefined(block.belowRight));
 		if (isFalling) {
 			canJump = false;
@@ -284,15 +284,15 @@ const Game = {
 		Player.sprite.style.left = `${rawX}px`;
 		Player.sprite.style.bottom = `${rawY}px`;
 
-		// checking if at least one goomba is defined
+		// Check if at least one goomba is defined
 		if (Goombas.length !== 0) {
 			for (let i of Goombas) {
 				let goomba = document.querySelector(`.goomba-${i.id}`);
 				if (i.dir === 0) {
-					// left direction
+					// Left direction
 					// i.posX -= i.speed
 				} else {
-					// right direction
+					// Right direction
 					// i.posX += i.speed
 				}
 				goomba.style.left = `${i.posX * Game.u}px`;
@@ -308,7 +308,7 @@ const Game = {
 		(Player.dead) ? Game.freeze() : Game.unfreeze()
 	},
 	freeze: function() {
-		// disable player input
+		// Disable player input
 		if (canLoop) {
 			window.cancelAnimationFrame(canLoop);
 			canLoop = undefined
@@ -316,7 +316,7 @@ const Game = {
 		document.removeEventListener("keydown", Game.keydown);
 		document.removeEventListener("keydown", Game.keydownJump);
 		document.removeEventListener("keyup", Game.keyup);
-		// death function
+		// Death function
 		if (Player.dead) {
 			Player.sprite.style.visibility = "hidden";
 			Player.sprite.style["-webkit-animationName"] = "playerDeathFall";
@@ -333,11 +333,11 @@ const Game = {
 	}
 },
 isDefined = function(e) {
-	// check if the targeted element is either empty, border or part of the environment
+	// Check if the targeted element is either empty, border or part of the environment
 	return !(e[0] === "0" || e === undefined || e.includes("behind"))
 },
 block = {
-	// calculate collisions coming from above, left, right and below
+	// Calculate collisions coming from above, left, right and below
 	aboveLeft: undefined,
 	calcAboveLeft: function() {
 		let request = [
@@ -345,8 +345,8 @@ block = {
 			Math.floor(posX)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .above-left").forEach(function(e) {e.classList.remove("above-left")}); // removing old collision class
-			document.querySelector(`.${query}`).classList.add("above-left")
+			document.querySelectorAll(".map .above-left").forEach(function(e) {e.classList.remove("above-left")}); // Remove all old collisions
+			document.querySelector(`.${query}`).classList.add("above-left") // Add current collision
 		} catch (e) {}
 		return query
 	},
@@ -357,8 +357,8 @@ block = {
 			Math.ceil(posX)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .above-right").forEach(function(e) {e.classList.remove("above-right")}); // removing old collision class
-			document.querySelector(`.${query}`).classList.add("above-right")
+			document.querySelectorAll(".map .above-right").forEach(function(e) {e.classList.remove("above-right")}); // Remove all old collisions
+			document.querySelector(`.${query}`).classList.add("above-right") // Add current collision
 		} catch (e) {}
 		return query
 	},
@@ -369,8 +369,8 @@ block = {
 			Math.ceil(posX - 1.2)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .left-top").forEach(function(e) {e.classList.remove("left-top")}); // removing old collision class
-			document.querySelector(`.${query}`).classList.add("left-top")
+			document.querySelectorAll(".map .left-top").forEach(function(e) {e.classList.remove("left-top")}); // Remove all old collisions
+			document.querySelector(`.${query}`).classList.add("left-top") // Add current collision
 		} catch (e) {}
 		return query
 	},
@@ -381,8 +381,8 @@ block = {
 			Math.ceil(posX - 1.2)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .left-bottom").forEach(function(e) {e.classList.remove("left-bottom")}); // removing old collision class
-			document.querySelector(`.${query}`).classList.add("left-bottom")
+			document.querySelectorAll(".map .left-bottom").forEach(function(e) {e.classList.remove("left-bottom")}); // Remove all old collisions
+			document.querySelector(`.${query}`).classList.add("left-bottom") // Add current collision
 		} catch (e) {}
 		return query
 	},
@@ -393,8 +393,8 @@ block = {
 			Math.floor(posX + 1)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .right-top").forEach(function(e) {e.classList.remove("right-top")}); // removing old collision class
-			document.querySelector(`.${query}`).classList.add("right-top")
+			document.querySelectorAll(".map .right-top").forEach(function(e) {e.classList.remove("right-top")}); // Remove all old collisions
+			document.querySelector(`.${query}`).classList.add("right-top") // Add current collision
 		} catch (e) {}
 		return query
 	},
@@ -405,8 +405,8 @@ block = {
 			Math.floor(posX + 1)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .right-bottom").forEach(function(e) {e.classList.remove("right-bottom")}); // removing old collision class
-			document.querySelector(`.${query}`).classList.add("right-bottom")
+			document.querySelectorAll(".map .right-bottom").forEach(function(e) {e.classList.remove("right-bottom")}); // Remove all old collisions
+			document.querySelector(`.${query}`).classList.add("right-bottom") // Add current collision
 		} catch (e) {}
 		return query
 	},
@@ -417,8 +417,8 @@ block = {
 			Math.floor(posX)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .below-left").forEach(function(e) {e.classList.remove("below-left")}); // removing old collision class
-			document.querySelector(`.${query}`).classList.add("below-left")
+			document.querySelectorAll(".map .below-left").forEach(function(e) {e.classList.remove("below-left")}); // Remove all old collisions
+			document.querySelector(`.${query}`).classList.add("below-left") // Add current collision
 		} catch (e) {}
 		return query
 	},
@@ -429,26 +429,26 @@ block = {
 			Math.ceil(posX)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .below-right").forEach(function(e) {e.classList.remove("below-right")}); // removing old collision class
-			document.querySelector(`.${query}`).classList.add("below-right")
+			document.querySelectorAll(".map .below-right").forEach(function(e) {e.classList.remove("below-right")}); // Remove all old collisions
+			document.querySelector(`.${query}`).classList.add("below-right") // Add current collision
 		} catch (e) {}
 		return query
 	}
 },
 giveItem = function(e) {
-	// change the hit mystery blocks by steel blocks
+	// Change the hit mystery blocks by steel blocks
 	let indexes = /\d+-\d+/g.exec(e)[0];
 	indexes = indexes.split("-");
-	lvl[indexes[0]][indexes[1]] = "steel"; // replace the array element by "steel"
-	let block = document.querySelector(`.${e}`); // get the element with the array coords
-	block.className = block.className.replace(/mystery/g, "steel") // replace the classes that contain "mystery" by "steel"
+	lvl[indexes[0]][indexes[1]] = "steel"; // Replace the array element by "steel"
+	let block = document.querySelector(`.${e}`); // Get the element with the array coords
+	block.className = block.className.replace(/mystery/g, "steel") // Replace the classes that contain "mystery" by "steel"
 },
 map = document.querySelector(".map"),
 environment = document.querySelector(".environment"),
 pause = document.querySelector(".pause"),
 debug = document.querySelector(".debug"),
-hittableBlocks = /(brick|mystery)/, // hittable blocks regexp
-// terrain textures
+hittableBlocks = /(brick|mystery)/, // Hittable blocks regexp
+// Terrain textures
 G = "ground",
 g = "ground behind",
 B = "brick",
@@ -461,21 +461,21 @@ Y = "mystery",
 y = "mystery behind",
 H = "hidden",
 Player = {
-	sprite: document.querySelector(".player"), // player element
-	speed: 6, // base speed
-	get speedRaw() {return (this.speed / Game.u)}, // raw speed
-	jumpSpeed: 6, // base jump speed
-	get jumpSpeedRaw() {return (this.jumpSpeed / Game.u)}, // raw jump speed
-	fallSpeed: 6, // base fall speed
-	get fallSpeedRaw() {return (this.fallSpeed / Game.u)}, // raw fall speed
-	dead: false // is dead
+	sprite: document.querySelector(".player"), // Player element
+	speed: 6, // Base speed
+	get speedRaw() {return (this.speed / Game.u)}, // Raw speed
+	jumpSpeed: 6, // Base jump speed
+	get jumpSpeedRaw() {return (this.jumpSpeed / Game.u)}, // Raw jump speed
+	fallSpeed: 6, // Base fall speed
+	get fallSpeedRaw() {return (this.fallSpeed / Game.u)}, // Raw fall speed
+	dead: false // Is dead
 },
 Goomba = function(id, [posX, posY], dir, speed = 2) {
-	// init a new goomba
-	// id 			integer, goombas's id. it will be added as a class to the element
-	// posX/posY 	spawn coordinates
-	// dir			boolean, X-axis direction. the goomba will follow it until he falls or touches the map border
-	// speed 		integer, defines the goomba's speed, default is 1
+	// Init a new goomba
+	// id 				Integer, goombas's id. It will be added as a class to the element
+	// [posX, posY]		Spawn coordinates
+	// dir				Boolean, X-axis direction. The goomba will follow it until he falls or touches the map border
+	// speed 			Integer, defines the goomba's speed, default is 1
 	speed /= Game.u;
 	let goomba = {
 		id: id,
@@ -492,38 +492,38 @@ Goomba = function(id, [posX, posY], dir, speed = 2) {
 	map.appendChild(e)
 };
 Goombas = [];
-// coordinates, movement, jump, fall
-let canLoop, // looping function
-paused = true, // game paused
-spawned = false, // player spawn animation end
-dirLeft, // left direction
-canMoveLeft = true, // can move to left
-dirRight, // right direction
-canMoveRight = true, // can move to right
-jumpReleased = true, // is spacebar released
-canJump = true, // can do a jump
-isJumping = false, // is jumping
-isFalling = false, // is falling
+// Coordinates, movement, jump, fall
+let canLoop, // Looping function
+paused = true, // Game paused
+spawned = false, // Player spawn animation end
+dirLeft, // Left direction
+canMoveLeft = true, // Can move to left
+dirRight, // Right direction
+canMoveRight = true, // Can move to right
+jumpReleased = true, // Is spacebar released
+canJump = true, // Can do a jump
+isJumping = false, // Is jumping
+isFalling = false, // Is falling
 posX = 1.5, // X start coord (based on the number of elements in the level row)
 posY = 4, // Y start coord (based on the number of elements in the level column)
 rawX = (posX * Game.u), // X start coord (raw, * 48)
 rawY = (posY * Game.u); // Y start coord (raw, * 48)
 
-// init level pattern
-// all sub-arrays must have the same length!
+// Init level pattern
+// All sub-arrays must have the same length!
 const lvl = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// the lines above ensure the jump limit, must not be removed
+	// The 5 lines above ensure the jump limit, don't remove them
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// the lines above are used to make the window higher, can be removed
+	// The lines above are used to make the window higher, can be removed
 	[0, 0, 0, 0, 0, 0, S, 0, S, B, Y, B, Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Y, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, G, G, 0, 0, 0, 0, 0, G, G],
@@ -533,20 +533,20 @@ const lvl = [
 	[G, G, G, G, G, G, G, G, G, G, G, G, g, g, g, G, G, G, G, g, g, g, g, G, G, G, G, G, G],
 	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, g, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
-lvlRightBorder = (lvl[9].length - 1); // equals to the length of the last row
+lvlRightBorder = (lvl[9].length - 1); // Equals to the length of the last row
 
 Player.sprite.style.left = `${rawX}px`;
 Player.sprite.style.bottom = `${rawY}px`;
-// load level
+// Load level
 map.style.height = `${Game.u * lvl.length}px`;
 Game.setLevelPattern(lvl);
 Game.setEnvironment();
 
-// pause menu
+// Pause menu
 document.addEventListener("keydown", function(e) {if (e.keyCode === 27) Game.togglePauseMenu()});
 pause.addEventListener("mousedown", Game.togglePauseMenu);
 
-// unfreeze after spawn animation
+// Unfreeze after spawn animation
 setTimeout(function() {
 	spawned = true;
 	if (!paused) Game.unfreeze()
