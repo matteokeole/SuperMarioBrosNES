@@ -1,6 +1,7 @@
 <!--
-	Super Mario Bros. NES JavaScript (vanilla) Prototype Remake
-	Made by Mattéo Legagneux (GitHub @matteoo34)
+	A web remake of Super Mario Bros. NES with vanilla JavaScript (prototype).
+	GitHub repository: https://github.com/matteoo34/SuperMarioBrosNES
+	Made by Mattéo Legagneux
 	Copyright (C) 2021
 -->
 
@@ -21,37 +22,12 @@
 		<meta property="og:title" content="Super Mario Bros. NES JavaScript remake">
 		<meta property="og:description" content="A web remake of Super Mario Bros. NES with vanilla JavaScript.">
 		<meta property="og:image" content="https://matteoo34.github.io/SuperMarioBrosNES/assets/textures/title.png">
-		<meta property="og:image:width" content="352">
-		<meta property="og:image:height" content="174">
 		<link rel="icon" type="image/x-icon" href="favicon.ico">
 		<link rel="apple-touch-icon" type="image/x-icon" href="favicon.ico">
-		<link rel="stylesheet" type="text/css" href="assets/sprites.css">
-		<style>
-			.debug {
-				margin: 10px;
-				padding: 10px;
-				position: fixed;
-				background-color: rgba(0, 0, 0, 0.5);
-				color: #bbb;
-				z-index: 10
-			}
-
-			.debug span {color: #fff}
-
-			/* Collision highlighting */
-			/*.above-left {box-shadow: inset 0 0 0 4px lightgreen}
-			.above-right {box-shadow: inset 0 0 0 4px green}
-			.above-left.above-right {box-shadow: inset 0 0 0 4px darkgreen}
-			.left-top {box-shadow: inset 0 0 0 4px yellow}
-			.left-bottom {box-shadow: inset 0 0 0 4px orange}
-			.left-top.left-bottom {box-shadow: inset 0 0 0 4px red}
-			.right-top {box-shadow: inset 0 0 0 4px lightblue}
-			.right-bottom {box-shadow: inset 0 0 0 4px royalblue}
-			.right-top.right-bottom {box-shadow: inset 0 0 0 4px darkblue}
-			.below-left {box-shadow: inset 0 0 0 4px white}
-			.below-right {box-shadow: inset 0 0 0 4px black}
-			.below-left.below-right {box-shadow: inset 0 0 0 4px gray}*/
-		</style>
+		<link rel="stylesheet" type="text/css" href="assets/css/main.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/environment.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/sprites.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/animations.css">
 		<title>Super Mario Bros. NES JavaScript Remake</title>
 	</head>
 
@@ -63,7 +39,7 @@
 			<div class="pipe"></div>
 		</div>
 		<div class="pause"></div>
-		<script src="assets/game.js"></script>
+		<script src="assets/js/game.js"></script>
 	</body>
 
 </html>

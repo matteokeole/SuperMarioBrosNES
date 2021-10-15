@@ -1,0 +1,28 @@
+/** Sprites **/
+
+/* Player */
+.player {
+	width: 48px;
+	height: 48px;
+	position: absolute;
+	background-image: url(../textures/entity/mario-idle.png);
+	background-size: 100%;
+	-webkit-animation-name: playerSpawn;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-timing-function: linear;
+	animation-name: playerSpawn;
+	animation-duration: 1s;
+	animation-timing-function: linear;
+	z-index: 2
+}
+
+/* Goomba */
+.goomba {
+	width: 48px;
+	height: 48px;
+	position: absolute;
+	background-image: url(../textures/entity/goomba.png);
+	background-size: 100%;
+	-webkit-animation: goombaIdle 0.25s infinite, goomba_walk 5s infinite linear;
+	animation: goombaIdle 0.25s infinite, goomba_walk 5s infinite linear
+}

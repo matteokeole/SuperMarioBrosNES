@@ -1,4 +1,3 @@
-// Init
 const Game = {
 	u: 48,
 	setLevelPattern: function(lvl) {
