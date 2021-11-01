@@ -1,4 +1,5 @@
 const Game = {
+	fps: 70,
 	u: 48,
 	setLevelPattern: function(lvl) {
 		// Generate a level with a block pattern
@@ -21,16 +22,16 @@ const Game = {
 	},
 	setEnvironment: function() {
 		// Generate decorative elements in the background
-		bushes = [{
+		const bushes = [{
 				class: "bush-3",
 				pos: 6
 			}, {
 				class: "bush-2",
 				pos: 252
-			}, {
+			}/*, {
 				class: "bush-1",
 				pos: 522
-		}],
+		}*/],
 		clouds = [{
 				class: "cloud-1",
 				pos: -96
@@ -47,10 +48,10 @@ const Game = {
 			}, {
 				class: "hill-2",
 				pos: 273
-			}, {
+			}/*, {
 				class: "hill-1",
 				pos: 573
-		}];
+		}*/];
 		// Decorative bushes
 		bushes.forEach(function(e) {
 			let bush = document.createElement("div");
@@ -132,15 +133,12 @@ const Game = {
 	unfreeze: function() {
 		// Enable player input
 		if (!canLoop) {
-			document.addEventListener("keydown", Game.keydown);
+			addEventListener("keydown", Game.keydown);
 			// Jump handler
-			if (canJump && jumpReleased) {
-				document.addEventListener("keydown", Game.keydownJump)
-			} else {
-				document.removeEventListener("keydown", Game.keydownJump)
-			}
-			document.addEventListener("keyup", Game.keyup);
-			canLoop = window.requestAnimationFrame(Game.loop)
+			if (canJump && jumpReleased) addEventListener("keydown", Game.keydownJump);
+			else removeEventListener("keydown", Game.keydownJump);
+			addEventListener("keyup", Game.keyup);
+			canLoop = setTimeout(Game.loop, 1000 / Game.fps)
 		}
 	},
 	loop: function() {
@@ -151,14 +149,16 @@ const Game = {
 		rawX = (Game.u * posX).toFixed();
 		rawY = (Game.u * posY).toFixed();
 
-		block.aboveLeft = block.calcAboveLeft();
-		block.aboveRight = block.calcAboveRight();
-		block.leftTop = block.calcLeftTop();
-		block.leftBottom = block.calcLeftBottom();
-		block.rightTop = block.calcRightTop();
-		block.rightBottom = block.calcRightBottom();
-		block.belowLeft = block.calcBelowLeft();
-		block.belowRight = block.calcBelowRight();
+		if (!Player.dead) {
+			block.aboveLeft = block.calcAboveLeft();
+			block.aboveRight = block.calcAboveRight();
+			block.leftTop = block.calcLeftTop();
+			block.leftBottom = block.calcLeftBottom();
+			block.rightTop = block.calcRightTop();
+			block.rightBottom = block.calcRightBottom();
+			block.belowLeft = block.calcBelowLeft();
+			block.belowRight = block.calcBelowRight()
+		}
 
 		// Movement handlers
 		if (!isDefined(block.leftTop) && !isDefined(block.leftBottom)) canMoveLeft = true;
@@ -280,6 +280,24 @@ const Game = {
 			}
 		}
 
+		// Death event
+		if (Player.dead && !Player.deathAnimEnded) {
+			Game.freeze();
+			Player.deathAnimEnded = true;
+			Player.sprite.style.visibility = "hidden";
+			Player.sprite.style["-webkit-animationName"] = "playerDeathFall";
+			Player.sprite.style["-webkit-animationDuration"] = "0.5s";
+			Player.sprite.style.animationName = "playerDeathFall";
+			Player.sprite.style.animationDuration = "0.5s";
+			setTimeout(function() {
+				Player.sprite.style["animationName"] = "playerDeath";
+				Player.sprite.style["animationDuration"] = "1.25s"
+				Player.sprite.style.animationName = "playerDeath";
+				Player.sprite.style.animationDuration = "1.25s"
+			}, 500)
+		} else Game.unfreeze();
+
+		// Player position on map
 		Player.sprite.style.left = `${rawX}px`;
 		Player.sprite.style.bottom = `${rawY}px`;
 
@@ -299,23 +317,14 @@ const Game = {
 			}
 		}
 
-		debug.innerHTML =
-			`<span>PosX:</span> ${posX.toFixed()}<br>
-			<span>RawX:</span> ${rawX}<br><br>
-			<span>PosY:</span> ${posY.toFixed()}<br>
-			<span>RawY:</span> ${rawY}<br>`;
-		(Player.dead) ? Game.freeze() : Game.unfreeze()
+		// Debug
+		debug.innerHTML = `<span>POS_X:</span> ${posX.toFixed()}<br>
+			<span>RAW_X:</span> ${rawX}<br><br>
+			<span>POS_Y:</span> ${posY.toFixed()}<br>
+			<span>RAW_Y:</span> ${rawY}<br>`
 	},
 	freeze: function() {
-		// Disable player input
-		if (canLoop) {
-			window.cancelAnimationFrame(canLoop);
-			canLoop = undefined
-		}
-		document.removeEventListener("keydown", Game.keydown);
-		document.removeEventListener("keydown", Game.keydownJump);
-		document.removeEventListener("keyup", Game.keyup);
-		// Death function
+		/*// Death function
 		if (Player.dead) {
 			Player.sprite.style.visibility = "hidden";
 			Player.sprite.style["-webkit-animationName"] = "playerDeathFall";
@@ -328,7 +337,15 @@ const Game = {
 				Player.sprite.style.animationName = "playerDeath";
 				Player.sprite.style.animationDuration = "1.25s"
 			}, 500)
+		}*/
+		// Disable player input
+		if (canLoop) {
+			clearTimeout(canLoop);
+			canLoop = undefined
 		}
+		removeEventListener("keydown", Game.keydown);
+		removeEventListener("keydown", Game.keydownJump);
+		removeEventListener("keyup", Game.keyup);
 	}
 },
 isDefined = function(e) {
@@ -467,7 +484,8 @@ Player = {
 	get jumpSpeedRaw() {return (this.jumpSpeed / Game.u)}, // Raw jump speed
 	fallSpeed: 6, // Base fall speed
 	get fallSpeedRaw() {return (this.fallSpeed / Game.u)}, // Raw fall speed
-	dead: false // Is dead
+	dead: false, // Is dead
+	deathAnimEnded: false // Is death animation ended
 },
 Goomba = function(id, [posX, posY], dir, speed = 2) {
 	// Init a new goomba
@@ -527,28 +545,28 @@ const lvl = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Y, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, G, G, 0, 0, 0, 0, 0, G, G],
 	[0, 0, 0, 0, 0, 0, B, Y, B, Y, B, 0, 0, 0, 0, 0, 0, 0, M, M, G, G, 0, 0, 0, 0, 0, G, G],
-	[0, H, H, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, Y, G, G, g, G, G, G, G, G, G],
-	[0, H, H, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, g, g, g, g, G, G, G, G, G, G],
-	[G, G, G, G, G, G, G, G, G, G, G, G, g, g, g, G, G, G, G, g, g, g, g, G, G, G, G, G, G],
-	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, g, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
+	[0, H, H, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, Y, G, G, 0, G, G, G, G, G, G],
+	[0, H, H, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, M, M, 0, 0, 0, 0, G, G, G, G, G, G],
+	[G, G, G, G, G, G, G, G, G, G, G, G, 0, 0, 0, G, G, G, G, 0, 0, 0, 0, G, G, G, G, G, G],
+	[G, G, G, G, G, G, G, G, G, G, G, G, G, G, 0, G, G, G, G, G, G, G, G, G, G, G, G, G, G]
 ],
 lvlRightBorder = (lvl[9].length - 1); // Equals to the length of the last row
 
 Player.sprite.style.left = `${rawX}px`;
 Player.sprite.style.bottom = `${rawY}px`;
 // Load level
-map.style.height = `${Game.u * lvl.length}px`;
 Game.setLevelPattern(lvl);
 Game.setEnvironment();
 
 // Pause menu
-document.addEventListener("keydown", function(e) {if (e.keyCode === 27) Game.togglePauseMenu()});
+addEventListener("keydown", function(e) {if (e.keyCode === 27) Game.togglePauseMenu()});
 pause.addEventListener("mousedown", Game.togglePauseMenu);
 
 // Unfreeze after spawn animation
 setTimeout(function() {
 	spawned = true;
 	if (!paused) Game.unfreeze()
-}, 1000)
+}, 1000);
 
-let goomba1 = new Goomba(1, [12, 1], 1)
+// Create goomba
+// let goomba1 = new Goomba(1, [12, 1], 1)

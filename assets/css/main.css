@@ -1,6 +1,6 @@
-/** Main **/
+/** Main styles **/
 
-/* Font import */
+/* Super Mario Bros. NES font import */
 @font-face {
 	font-family: "SMBRegular";
 	src: url(../fonts/SMBRegular.ttf) format("truetype")
@@ -19,12 +19,7 @@ html, body {
 
 /* Map container */
 .map {
-	margin: auto;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	position: absolute;
+	height: 100vh;
 	background-color: #5c94fc;
 	/*background-color: #754b3d*/
 }
