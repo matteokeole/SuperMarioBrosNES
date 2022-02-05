@@ -2,7 +2,7 @@
 
 /* Super Mario Bros. NES font import */
 @font-face {
-	font-family: "SMBRegular";
+	font-family: SMBRegular;
 	src: url(../fonts/SMBRegular.ttf) format("truetype")
 }
 
