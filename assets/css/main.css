@@ -57,15 +57,15 @@ html, body {
 
 /* Collision highlighting */
 
-.above-left {box-shadow: inset 0 0 0 4px lightgreen}
-.above-right {box-shadow: inset 0 0 0 4px green}
-.above-left.above-right {box-shadow: inset 0 0 0 4px darkgreen}
-.left-top {box-shadow: inset 0 0 0 4px yellow}
-.left-bottom {box-shadow: inset 0 0 0 4px orange}
-.left-top.left-bottom {box-shadow: inset 0 0 0 4px red}
-.right-top {box-shadow: inset 0 0 0 4px lightblue}
-.right-bottom {box-shadow: inset 0 0 0 4px royalblue}
-.right-top.right-bottom {box-shadow: inset 0 0 0 4px darkblue}
-.below-left {box-shadow: inset 0 0 0 4px white}
-.below-right {box-shadow: inset 0 0 0 4px black}
-.below-left.below-right {box-shadow: inset 0 0 0 4px gray}
+.tl {box-shadow: inset 0 0 0 4px lightgreen}
+.tr {box-shadow: inset 0 0 0 4px green}
+.tl.tr {box-shadow: inset 0 0 0 4px darkgreen}
+.lt {box-shadow: inset 0 0 0 4px yellow}
+.lb {box-shadow: inset 0 0 0 4px orange}
+.lt.lb {box-shadow: inset 0 0 0 4px red}
+.rt {box-shadow: inset 0 0 0 4px lightblue}
+.rb {box-shadow: inset 0 0 0 4px royalblue}
+.rt.rb {box-shadow: inset 0 0 0 4px darkblue}
+.bl {box-shadow: inset 0 0 0 4px white}
+.br {box-shadow: inset 0 0 0 4px black}
+.bl.br {box-shadow: inset 0 0 0 4px gray}
