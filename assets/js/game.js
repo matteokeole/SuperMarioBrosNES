@@ -426,10 +426,10 @@ giveItem = e => {
 	let block = document.querySelector(`.${e}`); // Get the element with the array coords
 	block.className = block.className.replace(/mystery/g, "steel") // Replace the classes that contain "mystery" by "steel"
 },
-map = document.querySelector(".map"),
-environment = document.querySelector(".environment"),
-pause = document.querySelector(".pause"),
-debug = document.querySelector(".debug"),
+map = document.querySelector("#map"),
+environment = document.querySelector("#environment"),
+pause = document.querySelector("#pause"),
+debug = document.querySelector("#debug"),
 hittableBlocks = /(brick|mystery)/, // Hittable blocks regexp
 // Terrain textures
 G = "ground",

@@ -1,4 +1,7 @@
-/** Main styles **/
+/* CSS imports */
+@import url(environment.css);
+@import url(keyframes.css);
+@import url(sprites.css);
 
 /* Super Mario Bros. NES font import */
 @font-face {
@@ -18,14 +21,14 @@ html, body {
 }
 
 /* Map container */
-.map {
+#map {
 	height: 100vh;
 	background-color: #5c94fc;
 	/*background-color: #754b3d*/
 }
 
 /* Pause menu */
-.pause {
+#pause {
 	width: 100%;
 	height: 100%;
 	margin: 0 auto;
@@ -41,7 +44,7 @@ html, body {
 
 /* Debug console */
 
-.debug {
+#debug {
 	margin: 10px;
 	padding: 10px;
 	position: fixed;
@@ -50,7 +53,7 @@ html, body {
 	z-index: 10
 }
 
-.debug span {color: #fff}
+#debug span {color: #fff}
 
 /* Collision highlighting */
 

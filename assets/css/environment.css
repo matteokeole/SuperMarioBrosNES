@@ -1,6 +1,6 @@
 /** Environment **/
 
-.environment {
+#environment {
 	margin: auto;
 	top: 0;
 	right: 0;
@@ -19,7 +19,6 @@
 	background-size: 100%;
 	animation-timing-function: linear
 }
-
 .block.ground {background-image: url(../textures/block/ground.png)}
 .block.ground {background-image: url(../textures/block/ground.png)}
 .block.brick {background-image: url(../textures/block/brick.png)}
@@ -61,7 +60,6 @@
 	background-size: 100%;
 	z-index: -2
 }
-
 .bush.bush-1 {
 	width: 96px;
 	left: 0;
@@ -87,7 +85,6 @@
 	animation: cloud linear infinite;
 	z-index: -2
 }
-
 .cloud.cloud-1 {
 	width: 96px;
 	top: 48px;
@@ -115,7 +112,6 @@
 	background-size: 100%;
 	z-index: -3
 }
-
 .hill.hill-1 {
 	width: 144px;
 	height: 57px;

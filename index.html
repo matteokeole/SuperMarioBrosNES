@@ -1,19 +1,11 @@
-<!--
-	A web remake of Super Mario Bros. NES with vanilla JavaScript (prototype).
-	GitHub repository: https://github.com/matteoo34/SuperMarioBrosNES
-	Made by Mattéo Legagneux
-	Copyright (C) 2021
--->
-
 <!DOCTYPE html>
 
 <html prefix="og: http://ogp.me/ns#" lang="en">
-
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="description" content="A web remake of Super Mario Bros. NES with vanilla JavaScript.">
-		<meta name="keywords" content="super, mario, luigi, bros, brothers, nintendo, nes, web, game, 2d, remake, mattéo, legagneux">
+		<meta name="keywords" content="super, mario, luigi, bros, brothers, nintendo, nes, web, game, 2d, remake">
 		<meta name="author" content="Mattéo Legagneux">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta property="og:type" content="website">
@@ -25,21 +17,16 @@
 		<link rel="icon" type="image/x-icon" href="favicon.ico">
 		<link rel="apple-touch-icon" type="image/x-icon" href="favicon.ico">
 		<link rel="stylesheet" type="text/css" href="assets/css/main.css">
-		<link rel="stylesheet" type="text/css" href="assets/css/environment.css">
-		<link rel="stylesheet" type="text/css" href="assets/css/sprites.css">
-		<link rel="stylesheet" type="text/css" href="assets/css/animations.css">
 		<title>Super Mario Bros. NES JavaScript Remake</title>
 	</head>
-
 	<body>
-		<div class="debug"></div>
-		<div class="map">
-			<div class="environment"></div>
+		<div id="debug"></div>
+		<div id="map">
+			<div id="environment"></div>
 			<div id="player"></div>
 			<div class="pipe"></div>
 		</div>
-		<div class="pause"></div>
+		<div id="pause"></div>
 		<script src="assets/js/game.js"></script>
 	</body>
-
 </html>
