@@ -10,8 +10,8 @@ const Game = {
 					// Ignore air blocks
 					let block = document.createElement("div");
 					block.className = `block ${lvl[i][j]} ${lvl[i][j]}-${i}-${j}`;
-					block.style.bottom = `${y}px`;
 					block.style.left = `${x}px`;
+					block.style.bottom = `${y}px`;
 					map.appendChild(block)
 				}
 				x += Game.u // Next element in the row
@@ -85,7 +85,8 @@ const Game = {
 			// Right arrow, D key
 			case 39:
 			case 68:
-				dirRight = true
+				dirRight = true;
+				break
 		}
 	},
 	keydownJump: e => {
@@ -113,7 +114,8 @@ const Game = {
 			case 32:
 				jumpReleased = true;
 				canJump = true;
-				isJumping = false
+				isJumping = false;
+				break
 		}
 	},
 	togglePauseMenu: () => {
@@ -144,13 +146,13 @@ const Game = {
 	loop: () => {
 		// Render function (started by Game.unfreeze() and paused by Game.freeze())
 		canLoop = undefined;
-		Player.state = "idle";
+		Entities.player.state = "idle";
 
 		rawX = (Game.u * posX).toFixed();
 		rawY = (Game.u * posY).toFixed();
 
 		// Get blocks close to the player
-		if (!Player.isDead) {
+		if (!Entities.player.isDead) {
 			block.aboveLeft = block.calcAboveLeft();
 			block.aboveRight = block.calcAboveRight();
 			block.leftTop = block.calcLeftTop();
@@ -168,11 +170,11 @@ const Game = {
 		// Left movement event
 		if (dirLeft) {
 			// Sprite animation & direction
-			Player.state = "walking";
-			Player.rotation = 180;
+			Entities.player.state = "walking";
+			Entities.player.rotation = 180;
 			if (canMoveLeft) {
 				canMoveRight = true;
-				posX -= Player.speedRaw;
+				posX -= Entities.player.speedRaw;
 				// Looking for collisions
 				if (posX <= 0) posX = 0; // Border collision
 				if (isDefined(block.leftTop) || isDefined(block.leftBottom)) {
@@ -185,11 +187,11 @@ const Game = {
 		// Right movement event
 		if (dirRight) {
 			// Sprite animation & direction
-			Player.state = "walking";
-			Player.rotation = 0;
+			Entities.player.state = "walking";
+			Entities.player.rotation = 0;
 			if (canMoveRight) {
 				canMoveLeft = true;
-				posX += Player.speedRaw;
+				posX += Entities.player.speedRaw;
 				// Looking for collisions
 				if (posX >= lvlRightBorder) posX = lvlRightBorder; // Border collision
 				if (isDefined(block.rightTop) || isDefined(block.rightBottom)) {
@@ -200,14 +202,14 @@ const Game = {
 		}
 
 		// Idle event
-		if (!dirLeft && !dirRight) Player.state = "idle";
+		if (!dirLeft && !dirRight) Entities.player.state = "idle";
 
 		// Jump event
-		if (!jumpReleased || isJumping || isFalling) Player.state = "jumping";
+		if (!jumpReleased || isJumping || isFalling) Entities.player.state = "jumping";
 		canJump = (!isDefined(block.aboveLeft) && !isDefined(block.aboveRight));
 		if (canJump && isJumping) {
 			canJump = false;
-			posY += Player.jumpSpeedRaw;
+			posY += Entities.player.jumpSpeedRaw;
 			setTimeout(function() {isJumping = false}, 400)
 		}
 
@@ -252,27 +254,27 @@ const Game = {
 		}
 
 		// Player fall event
-		isFalling = (!isJumping && !isDefined(block.belowLeft) && !isDefined(block.belowRight) && !Player.isDead);
+		isFalling = (!isJumping && !isDefined(block.belowLeft) && !isDefined(block.belowRight) && !Entities.player.isDead);
 		if (isFalling) {
 			canJump = false;
-			posY -= Player.fallSpeedRaw;
+			posY -= Entities.player.fallSpeedRaw;
 			if (posY < 0.5 && !isDefined(block.belowLeft) && !isDefined(block.belowRight)) {
-				Player.isDead = true
+				Entities.player.isDead = true
 			}
 		}
 
 		// Player death event
-		if (Player.isDead && !Player.isDeathAnimEnded) {
+		if (Entities.player.isDead && !Entities.player.isDeathAnimEnded) {
 			Game.freeze();
-			Player.isDeathAnimEnded = true;
-			Player.sprite.style.visibility = "hidden";
-			Player.state = "deathFromFall";
-			setTimeout(function() {Player.state = "death"}, 500)
+			Entities.player.isDeathAnimEnded = true;
+			Entities.player.sprite.style.visibility = "hidden";
+			Entities.player.state = "deathFromFall";
+			setTimeout(function() {Entities.player.state = "death"}, 500)
 		} else Game.unfreeze();
 
 		// Update player position
-		Player.posX = rawX;
-		Player.posY = rawY;
+		Entities.player.posX = rawX;
+		Entities.player.posY = rawY;
 
 		// Check if some goombas are defined
 		if (Entities.goombas.length !== 0) {
@@ -300,10 +302,10 @@ const Game = {
 	},
 	freeze: () => {
 		// Death function
-		/*if (Player.isDead) {
-			Player.sprite.style.visibility = "hidden";
-			Player.state = "deathFromFall";
-			setTimeout(function() {Player.state = "death"}, 500)
+		/*if (Entities.player.isDead) {
+			Entities.player.sprite.style.visibility = "hidden";
+			Entities.player.state = "deathFromFall";
+			setTimeout(function() {Entities.player.state = "death"}, 500)
 		}*/
 		// Disable player input
 		if (canLoop) {
@@ -315,9 +317,9 @@ const Game = {
 		removeEventListener("keyup", Game.keyup);
 	}
 },
-isDefined = e => {
-	// Returns true if the target element is decorative, is a map border or is empty
-	return !(e[0] === "0" || e === undefined || e.includes("behind"))
+isDefined = target => {
+	// Return true if the target element is decorative, is a map border or is empty
+	return !(target[0] === "0" || target === undefined || target.includes("behind"))
 },
 block = {
 	// Calculate collisions coming from above, left, right and below
@@ -328,7 +330,7 @@ block = {
 			Math.floor(posX)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .above-left").forEach(e => {e.classList.remove("above-left")}); // Remove old collisions
+			map.querySelectorAll(".above-left").forEach(e => {e.classList.remove("above-left")}); // Remove old collisions
 			document.querySelector(`.${query}`).classList.add("above-left") // Add current collision
 		} catch (e) {}
 		return query
@@ -340,7 +342,7 @@ block = {
 			Math.ceil(posX)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .above-right").forEach(e => {e.classList.remove("above-right")}); // Remove old collisions
+			map.querySelectorAll(".above-right").forEach(e => {e.classList.remove("above-right")}); // Remove old collisions
 			document.querySelector(`.${query}`).classList.add("above-right") // Add current collision
 		} catch (e) {}
 		return query
@@ -352,7 +354,7 @@ block = {
 			Math.ceil(posX - 1.2)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .left-top").forEach(e => {e.classList.remove("left-top")}); // Remove old collisions
+			map.querySelectorAll(".left-top").forEach(e => {e.classList.remove("left-top")}); // Remove old collisions
 			document.querySelector(`.${query}`).classList.add("left-top") // Add current collision
 		} catch (e) {}
 		return query
@@ -364,7 +366,7 @@ block = {
 			Math.ceil(posX - 1.2)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .left-bottom").forEach(e => {e.classList.remove("left-bottom")}); // Remove old collisions
+			map.querySelectorAll(".left-bottom").forEach(e => {e.classList.remove("left-bottom")}); // Remove old collisions
 			document.querySelector(`.${query}`).classList.add("left-bottom") // Add current collision
 		} catch (e) {}
 		return query
@@ -376,7 +378,7 @@ block = {
 			Math.floor(posX + 1)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .right-top").forEach(e => {e.classList.remove("right-top")}); // Remove old collisions
+			map.querySelectorAll(".right-top").forEach(e => {e.classList.remove("right-top")}); // Remove old collisions
 			document.querySelector(`.${query}`).classList.add("right-top") // Add current collision
 		} catch (e) {}
 		return query
@@ -388,7 +390,7 @@ block = {
 			Math.floor(posX + 1)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .right-bottom").forEach(e => {e.classList.remove("right-bottom")}); // Remove old collisions
+			map.querySelectorAll(".right-bottom").forEach(e => {e.classList.remove("right-bottom")}); // Remove old collisions
 			document.querySelector(`.${query}`).classList.add("right-bottom") // Add current collision
 		} catch (e) {}
 		return query
@@ -400,7 +402,7 @@ block = {
 			Math.floor(posX)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .below-left").forEach(e => {e.classList.remove("below-left")}); // Remove old collisions
+			map.querySelectorAll(".below-left").forEach(e => {e.classList.remove("below-left")}); // Remove old collisions
 			document.querySelector(`.${query}`).classList.add("below-left") // Add current collision
 		} catch (e) {}
 		return query
@@ -412,7 +414,7 @@ block = {
 			Math.ceil(posX)
 		], query = `${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`;
 		try {
-			document.querySelectorAll(".map .below-right").forEach(e => {e.classList.remove("below-right")}); // Remove old collisions
+			map.querySelectorAll(".below-right").forEach(e => {e.classList.remove("below-right")}); // Remove old collisions
 			document.querySelector(`.${query}`).classList.add("below-right") // Add current collision
 		} catch (e) {}
 		return query
@@ -443,51 +445,51 @@ s = "steel behind",
 Y = "mystery",
 y = "mystery behind",
 H = "hidden",
-Player = {
-	sprite: document.querySelector("#player"), // DOM element
-	x: 0,
-	y: 0,
-	rotationValue: 0,
-	stateValue: "idle",
-	speed: 6, // Base speed
-	jumpSpeed: 6, // Base jump speed
-	fallSpeed: 6, // Base fall speed
-	isDead: false, // Is dead
-	isDeathAnimEnded: false, // Is death animation ended
-	get speedRaw() {return (this.speed / Game.u)}, // Get raw speed
-	get jumpSpeedRaw() {return (this.jumpSpeed / Game.u)}, // Get raw jump speed
-	get fallSpeedRaw() {return (this.fallSpeed / Game.u)}, // Get raw fall speed
-	set posX(x) {
-		/** Set the player X coordinate
-		 * @param {number} x - X coordinate, pixel-based
-		 */
-		this.x = x;
-		this.sprite.style.left = `${this.x}px`
-	},
-	set posY(y) {
-		/** Set the player Y coordinate
-		 * @param {number} y - Y coordinate, pixel-based
-		 */
-		this.y = y;
-		this.sprite.style.bottom = `${this.y}px`
-	},
-	set state(state) {
-		/** Set a state for the player
-		 * @param {string} state (idle|walking|skidding|jumping|falling) - State name
-		 */
-		this.stateValue = state;
-		this.sprite.className = this.stateValue
-	},
-	set rotation(rotation) {
-		/** Rotate the player by Y-axis
-		 * @param {number} rotation - Rotation value, from 0 to 180 deg
-		 */
-		this.rotationValue = rotation;
-		const rotationAngle = `rotateY(${this.rotationValue}deg)`;
-		this.sprite.style.transform = rotationAngle
-	},
-},
 Entities = {
+	player: {
+		sprite: document.querySelector("#player"), // DOM element
+		x: 0,
+		y: 0,
+		rotationValue: 0,
+		stateValue: "idle",
+		speed: 6, // Base speed
+		jumpSpeed: 6, // Base jump speed
+		fallSpeed: 6, // Base fall speed
+		isDead: false, // Is dead
+		isDeathAnimEnded: false, // Is death animation ended
+		get speedRaw() {return (this.speed / Game.u)}, // Get raw speed
+		get jumpSpeedRaw() {return (this.jumpSpeed / Game.u)}, // Get raw jump speed
+		get fallSpeedRaw() {return (this.fallSpeed / Game.u)}, // Get raw fall speed
+		set posX(x) {
+			/** Set the player X coordinate
+			 * @param {number} x - X coordinate, pixel-based
+			 */
+			this.x = x;
+			this.sprite.style.left = `${this.x}px`
+		},
+		set posY(y) {
+			/** Set the player Y coordinate
+			 * @param {number} y - Y coordinate, pixel-based
+			 */
+			this.y = y;
+			this.sprite.style.bottom = `${this.y}px`
+		},
+		set state(state) {
+			/** Set an animation state for the player
+			 * @param {string} state (idle|walking|skidding|jumping|falling) - State name
+			 */
+			this.stateValue = state;
+			this.sprite.className = this.stateValue
+		},
+		set rotation(rotation) {
+			/** Rotate the player by Y-axis
+			 * @param {number} rotation - Rotation value, from 0 to 180 deg
+			 */
+			this.rotationValue = rotation;
+			const rotationAngle = `rotateY(${this.rotationValue}deg)`;
+			this.sprite.style.transform = rotationAngle
+		},
+	},
 	goombas: []
 },
 Goomba = function(id, [posX, posY], dir, speed = 2) {
@@ -556,9 +558,9 @@ const lvl = [
 lvlRightBorder = (lvl[9].length - 1); // Equals to the length of the last row
 
 // Spawn player
-Player.posX = rawX;
-Player.posY = rawY;
-Player.state = "spawning";
+Entities.player.posX = rawX;
+Entities.player.posY = rawY;
+Entities.player.state = "spawning";
 
 // Load level
 Game.setLevelPattern(lvl);
