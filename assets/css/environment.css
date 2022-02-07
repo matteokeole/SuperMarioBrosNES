@@ -26,7 +26,7 @@
 .block.steel {background-image: url(../textures/block/steel.png)}
 .block.hidden {background-image: url(../textures/block/hidden.png)}
 .block.mystery {
-	background-image: url(../textures/block/mystery1.png);
+	background-image: url(../textures/block/mystery_1.png);
 	animation-name: mystery;
 	animation-duration: 1s;
 	animation-iteration-count: infinite
@@ -47,7 +47,7 @@
 	bottom: 96px;
 	left: 48px;
 	position: absolute;
-	background-image: url(../textures/pipe/pipe1.png);
+	background-image: url(../textures/pipe/pipe_1.png);
 	background-size: 100%
 }
 
@@ -63,17 +63,17 @@
 .bush.bush-1 {
 	width: 96px;
 	left: 0;
-	background-image: url(../textures/environment/bush1.png)
+	background-image: url(../textures/environment/bush_1.png)
 }
 .bush.bush-2 {
 	width: 144px;
 	left: 100px;
-	background-image: url(../textures/environment/bush2.png)
+	background-image: url(../textures/environment/bush_2.png)
 }
 .bush.bush-3 {
 	width: 192px;
 	left: 400px;
-	background-image: url(../textures/environment/bush3.png)
+	background-image: url(../textures/environment/bush_3.png)
 }
 
 /* Moving clouds */
@@ -88,19 +88,19 @@
 .cloud.cloud-1 {
 	width: 96px;
 	top: 48px;
-	background-image: url(../textures/environment/cloud1.png);
+	background-image: url(../textures/environment/cloud_1.png);
 	animation-duration: 80s
 }
 .cloud.cloud-2 {
 	width: 144px;
 	top: 144px;
-	background-image: url(../textures/environment/cloud2.png);
+	background-image: url(../textures/environment/cloud_2.png);
 	animation-duration: 40s
 }
 .cloud.cloud-3 {
 	width: 192px;
 	top: 240px;
-	background-image: url(../textures/environment/cloud3.png);
+	background-image: url(../textures/environment/cloud_3.png);
 	animation-duration: 60s
 }
 
@@ -115,10 +115,10 @@
 .hill.hill-1 {
 	width: 144px;
 	height: 57px;
-	background-image: url(../textures/environment/hill1.png)
+	background-image: url(../textures/environment/hill_1.png)
 }
 .hill.hill-2 {
 	width: 240px;
 	height: 105px;
-	background-image: url(../textures/environment/hill2.png)
+	background-image: url(../textures/environment/hill_2.png)
 }

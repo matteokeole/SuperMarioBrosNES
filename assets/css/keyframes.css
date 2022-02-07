@@ -4,10 +4,10 @@
 
 /* Mystery block color */
 @keyframes mystery {
-	0%, 40% {background-image: url(../textures/block/mystery1.png)}
-	55% {background-image: url(../textures/block/mystery2.png)}
-	70% {background-image: url(../textures/block/mystery3.png)}
-	85% {background-image: url(../textures/block/mystery2.png)}
+	0%, 40% {background-image: url(../textures/block/mystery_1.png)}
+	55% {background-image: url(../textures/block/mystery_2.png)}
+	70% {background-image: url(../textures/block/mystery_3.png)}
+	85% {background-image: url(../textures/block/mystery_2.png)}
 }
 
 /* Block pop */
