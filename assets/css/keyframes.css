@@ -10,7 +10,7 @@
 	85% {background-image: url(../textures/block/mystery_2.png)}
 }
 
-/* Block pop */
+/* Block pop effect */
 @keyframes pop {
 	30% {transform: translateY(-16px)}
 	40% {transform: translateY(-24px)}
