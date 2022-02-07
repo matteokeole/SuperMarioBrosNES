@@ -6,7 +6,7 @@ const Game = {
 		let x = 0, y = 0;
 		for (let i = lvl.length - 1; i >= 0; i--) {
 			for (let j = 0; j < lvl[i].length; j++) {
-				if (lvl[i][j] !== 0) {
+				if (lvl[i][j]) {
 					// Ignore air blocks
 					let block = document.createElement("div");
 					block.className = `block ${lvl[i][j]} ${lvl[i][j]}-${i}-${j}`;
@@ -14,63 +14,57 @@ const Game = {
 					block.style.bottom = `${y}px`;
 					map.appendChild(block)
 				}
-				x += Game.u // Next element in the row
+				x += Game.u // Move to next element in the row
 			}
 			x = 0; // Row beginning
-			y += Game.u // Next column
+			y += Game.u // Move to next column
 		}
 	},
 	setEnvironment: () => {
 		// Generate decorative elements in the background
 		const bushes = [{
 				class: "bush-3",
-				pos: 6
+				posX: 6
 			}, {
 				class: "bush-2",
-				pos: 252
-			}/*, {
-				class: "bush-1",
-				pos: 522
-		}*/],
+				posX: 252
+		}],
 		clouds = [{
 				class: "cloud-1",
-				pos: -96
+				posX: -96
 			}, {
 				class: "cloud-2",
-				pos: -144
+				posX: -144
 			}, {
 				class: "cloud-3",
-				pos: -240
+				posX: -240
 		}],
 		hills = [{
 				class: "hill-2",
-				pos: 48
+				posX: 48
 			}, {
 				class: "hill-2",
-				pos: 273
-			}/*, {
-				class: "hill-1",
-				pos: 573
-		}*/];
+				posX: 273
+		}];
 		// Decorative bushes
 		bushes.forEach(e => {
 			let bush = document.createElement("div");
 			bush.className = `bush ${e.class}`;
-			bush.style.left = `${e.pos}px`;
+			bush.style.left = `${e.posX}px`;
 			environment.appendChild(bush)
 		});
 		// Moving clouds
-		clouds.forEach((e, i) => {
+		clouds.forEach(e => {
 			let cloud = document.createElement("div");
 			cloud.className = `cloud ${e.class}`;
-			cloud.style.left = `${e.pos}px`;
+			cloud.style.left = `${e.posX}px`;
 			environment.appendChild(cloud)
 		});
 		// Decorative hills
 		hills.forEach(e => {
 			let hill = document.createElement("div");
 			hill.className = `hill ${e.class}`;
-			hill.style.left = `${e.pos}px`;
+			hill.style.left = `${e.posX}px`;
 			environment.appendChild(hill)
 		})
 	},
@@ -240,7 +234,6 @@ const Game = {
 					e.classList.add("pop");
 					setTimeout(function() {e.classList.remove("pop")}, 200);
 					if (e.classList.contains("mystery")) giveItem(block.aboveLeft)
-
 				} else if ((rawX % Game.u) >= (Game.u / 2)) {
 					// Right collision with a brick block or mystery block
 					e = document.querySelector(`.${block.aboveRight}`);
@@ -277,19 +270,17 @@ const Game = {
 		Entities.player.posY = rawY;
 
 		// Check if some goombas are defined
-		if (Entities.goombas.length !== 0) {
-			for (let goomba of Entities.goombas) {
-				let goombaElement = document.querySelector(`.goomba-${goomba.id}`);
-				if (goomba.dir === "left") {
-					// Left direction
-					// goomba.posX -= goomba.speed
-				} else if (goomba.dir === "right") {
-					// Right direction
-					// goomba.posX += goomba.speed
-				}
-				goombaElement.style.left = `${goomba.posX * Game.u}px`;
-				goombaElement.style.bottom = `${goomba.posY * Game.u}px`
+		for (let goomba of Entities.goombas) {
+			let goombaElement = document.querySelector(`.goomba-${goomba.id}`);
+			if (goomba.dir === "left") {
+				// Left direction
+				// goomba.posX -= goomba.speed
+			} else if (goomba.dir === "right") {
+				// Right direction
+				// goomba.posX += goomba.speed
 			}
+			goombaElement.style.left = `${goomba.posX * Game.u}px`;
+			goombaElement.style.bottom = `${goomba.posY * Game.u}px`
 		}
 
 		// Debug
@@ -572,7 +563,7 @@ addEventListener("keydown", e => {
 });
 pause.addEventListener("mousedown", Game.togglePauseMenu);
 
-// Unfreeze game after spawn animation
+// Unfreeze game after player spawn animation
 setTimeout(() => {
 	spawned = true;
 	if (!paused) Game.unfreeze()
