@@ -1,71 +1,7 @@
-/* CSS imports */
-@import url(environment.css);
-@import url(keyframes.css);
-@import url(sprites.css);
-
-/* Super Mario Bros. NES font import */
-@font-face {
-	font-family: SMBRegular;
-	src: url(../fonts/SMBRegular.ttf) format("truetype")
+body {
+	margin: initial;
 }
 
-/* This only works for Firefox, for Chrome use "pixelated" instead */
-* {image-rendering: crisp-edges}
-
-html, body {
-	margin: 0;
-	overflow: hidden;
-	background-color: #000;
-	user-select: none;
-	font-family: SMBRegular
+canvas {
+	display: block;
 }
-
-/* Map container */
-#map {
-	height: 100vh;
-	background-color: #5c94fc;
-	/*background-color: #754b3d*/
-}
-
-/* Pause menu */
-#pause {
-	width: 100%;
-	height: 100%;
-	margin: 0 auto;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	position: fixed;
-	background: rgba(0, 0, 0, 0.5) url(../textures/title.png) center 25% no-repeat;
-	background-size: 528px 261px;
-	z-index: 3
-}
-
-/* Debug console */
-
-#debug {
-	margin: 10px;
-	padding: 10px;
-	position: fixed;
-	background-color: rgba(0, 0, 0, 0.5);
-	color: #bbb;
-	z-index: 10
-}
-
-#debug span {color: #fff}
-
-/* Collision highlighting */
-
-.tl {box-shadow: inset 0 0 0 4px lightgreen}
-.tr {box-shadow: inset 0 0 0 4px green}
-.tl.tr {box-shadow: inset 0 0 0 4px darkgreen}
-.lt {box-shadow: inset 0 0 0 4px yellow}
-.lb {box-shadow: inset 0 0 0 4px orange}
-.lt.lb {box-shadow: inset 0 0 0 4px red}
-.rt {box-shadow: inset 0 0 0 4px lightblue}
-.rb {box-shadow: inset 0 0 0 4px royalblue}
-.rt.rb {box-shadow: inset 0 0 0 4px darkblue}
-.bl {box-shadow: inset 0 0 0 4px white}
-.br {box-shadow: inset 0 0 0 4px black}
-.bl.br {box-shadow: inset 0 0 0 4px gray}

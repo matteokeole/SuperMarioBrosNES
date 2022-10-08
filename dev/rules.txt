@@ -1,9 +1,0 @@
-100 pièces récoltées : + 1 vie
-Blocs [?] : pièces/objets, alternative invisible avec pièces/objets rares
-Orange & red mushroom : mario grandit (peut casser les blocs de briques)
-
-Objets:
-- Mushroom 1-Up: augmente le nb de vies
-- Orange/red Mushroom: augmente la taille
-- Fire Flower: lancer des boules de feu
-- Invincibility Star: invincible pdt qq secondes
