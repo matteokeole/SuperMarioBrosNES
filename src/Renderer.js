@@ -11,11 +11,16 @@ function Renderer() {
 
 	if (!gl) return console.error("This browser does not support WebGL 2.");
 
+	// Enable texture transparency
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	gl.enable(gl.BLEND);
+
 	const
 		vao			= gl.createVertexArray(),
 		buffer		= {
-			position: gl.createBuffer(),
-			resolution: gl.createBuffer(),
+			vertex:	gl.createBuffer(),
+			index:	gl.createBuffer(),
+			uv:		gl.createBuffer(),
 		},
 		attribute	= {},
 		uniform		= {};
@@ -46,17 +51,26 @@ function Renderer() {
 			gl.useProgram(program);
 			gl.bindVertexArray(vao);
 
-			// Locate position attribute
-			{
-				attribute.position = gl.getAttribLocation(program, "position");
+			// Initialize index buffer
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer.index);
 
-				gl.enableVertexAttribArray(attribute.position);
-				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.position);
-				gl.vertexAttribPointer(attribute.position, 2, gl.FLOAT, false, 0, 0);
-			}
+			// Locate vertex (position) attribute
+			attribute.position = gl.getAttribLocation(program, "a_position");
+			gl.enableVertexAttribArray(attribute.position);
+			gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex);
+			gl.vertexAttribPointer(attribute.position, 2, gl.FLOAT, false, 0, 0);
 
-			// Locate resolution attribute
-			uniform.resolution = gl.getUniformLocation(program, "resolution");
+			// Locate UV attribute
+			attribute.uv = gl.getAttribLocation(program, "a_uv");
+			gl.enableVertexAttribArray(attribute.uv);
+			gl.bindBuffer(gl.ARRAY_BUFFER, buffer.uv);
+			gl.vertexAttribPointer(attribute.uv, 2, gl.FLOAT, true, 0, 0);
+
+			// Locate resolution uniform
+			uniform.resolution = gl.getUniformLocation(program, "u_resolution");
+
+			// Locate repeat uniform
+			uniform.repeat = gl.getUniformLocation(program, "u_repeat");
 
 			return this;
 		},
@@ -74,21 +88,29 @@ function Renderer() {
 
 			gl.uniform2f(uniform.resolution, canvas.width, canvas.height);
 
-			let w, h, x, y;
+			let vertices, indices, texture, uvs, uw, uh, ux, uy;
 			for (const mesh of scene.meshes) {
-				({w, h, x, y} = mesh);
+				({vertices, indices, texture, uvs, uw, uh, ux, uy} = mesh);
 
-				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-					x,     y,
-					x + w, y,
-					x,     y + h,
-					x,     y + h,
-					x + w, y,
-					x + w, y + h,
-				]), gl.STATIC_DRAW);
+				// Pass the indexed vertices
+				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex);
+				gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+				gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+
+				// Pass the texture coordinates
+				gl.bindTexture(gl.TEXTURE_2D, texture);
+				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.uv);
+				gl.bufferData(gl.ARRAY_BUFFER, uvs, gl.STATIC_DRAW);
+
+				gl.uniform4fv(uniform.repeat, new Float32Array([
+					mesh.ux,
+					mesh.uy,
+					mesh.uw,
+					mesh.uh,
+				]));
+
+				gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 			}
-
-			gl.drawArrays(gl.TRIANGLES, 0, 6);
 
 			return this;
 		},

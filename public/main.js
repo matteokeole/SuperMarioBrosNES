@@ -1,15 +1,14 @@
-import {Loader, Mesh, Renderer, Scene, Utils} from "../src/index.js";
+import {Color, Floor, Pipe, Renderer, Scene, Utils} from "../src/index.js";
 
-// Loader.load();
+await Utils.loadTextures("assets/textures/sprites.png");
 
 // 0x9290ff
-const scene = new Scene();
+const scene = new Scene({background: new Color(0x000000)});
 
-// 1 tile = 48x48
-// const pipe = new Pipe();
-const mesh = new Mesh(96, 96, 48, 96);
+const floor = new Floor(innerWidth, 96, 0, 0);
+const pipe = new Pipe(96, 96, 48, 96);
 
-scene.add(mesh);
+scene.add(floor, pipe);
 
 // Load the shader program
 const program = await Utils.createProgram(
