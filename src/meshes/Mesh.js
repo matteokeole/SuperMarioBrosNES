@@ -4,8 +4,11 @@
  * @constructor
  * @returns	{self}
  */
-export function Mesh(w, h, x, y) {
+export function Mesh({width: w, height: h, position}) {
+	const {x, y} = position;
+
 	return Object.assign(this, {
+		position,
 		vertices: new Float32Array([
 			x,     y + h,
 			x + w, y + h,

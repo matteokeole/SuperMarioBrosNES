@@ -34,5 +34,5 @@ export async function loadTextures(...paths) {
 
 	gl.bindTexture(gl.TEXTURE_2D, null);
 
-	console.log(`%cLoading Finished (took ${((performance.now() - then) / 1000).toFixed(2)}s)`, "color: #6cbf6c");
+	console.log(`%cLoading finished (took ${((performance.now() - then) / 1000).toFixed(2)}s)`, "color: #6cbf6c");
 }

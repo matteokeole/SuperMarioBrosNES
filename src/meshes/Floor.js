@@ -1,4 +1,4 @@
-import {TEXTURES, Mesh} from "../index.js";
+import {CELL_SIZE, TEXTURES, Mesh} from "../index.js";
 
 /**
  * @todo
@@ -7,11 +7,11 @@ import {TEXTURES, Mesh} from "../index.js";
  * @augments	Mesh
  * @returns		{self}
  */
-export function Floor(w, h, x, y) {
+export function Floor({width: w, height: h}) {
 	Mesh.call(this, ...arguments);
 
-	w /= 48;
-	h /= 48;
+	w /= CELL_SIZE;
+	h /= CELL_SIZE;
 
 	return Object.assign(this, {
 		texture: TEXTURES.get("assets/textures/sprites.png"),

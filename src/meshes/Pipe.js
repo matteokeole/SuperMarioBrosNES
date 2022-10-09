@@ -7,7 +7,7 @@ import {TEXTURES, Mesh} from "../index.js";
  * @augments	Mesh
  * @returns		{self}
  */
-export function Pipe(w, h, x, y) {
+export function Pipe({width: w, height: h}) {
 	Mesh.call(this, ...arguments);
 
 	w /= 96;
