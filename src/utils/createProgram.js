@@ -1,14 +1,18 @@
+import {Renderer} from "../index.js";
+
 /**
  * Creates a WebGLProgram.
+ * NOTE: Attributes and uniforms must be located manually.
  * 
  * @async
- * @param	{WebGL2RenderingContext}	gl				WebGL context
- * @param	{string}					vertexPath		Vertex shader file path
- * @param	{string}					fragmentPath	Fragment shader file path
+ * @param	{string}	vertexPath		Vertex shader file path
+ * @param	{string}	fragmentPath	Fragment shader file path
  * @returns	{WebGLProgram}
  */
-export async function createProgram(gl, vertexPath, fragmentPath) {
-	const program = gl.createProgram();
+export async function createProgram(vertexPath, fragmentPath) {
+	const
+		{gl} = Renderer,
+		program = gl.createProgram();
 	let source;
 
 	// Load vertex shader
@@ -23,8 +27,6 @@ export async function createProgram(gl, vertexPath, fragmentPath) {
 		return console.error(`${vertexPath}: VERTEX SHADER ${gl.getShaderInfoLog(vertexShader)}`);
 	}
 
-
-
 	// Load fragment shader
 	const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 	source = await (await fetch(fragmentPath, {headers: {"Cache-Control": "no-store"}})).text();
@@ -36,8 +38,6 @@ export async function createProgram(gl, vertexPath, fragmentPath) {
 	if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
 		return console.error(`${fragmentPath}: FRAGMENT SHADER ${gl.getShaderInfoLog(fragmentShader)}`);
 	}
-
-
 
 	gl.attachShader(program, vertexShader);
 	gl.attachShader(program, fragmentShader);

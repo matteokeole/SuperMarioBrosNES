@@ -14,7 +14,7 @@ export function Color(value) {
 		 */
 		toHex: () => `#${value.toString(16).padStart(6, 0)}`,
 		/**
-		 * Returns a Float32Array with the color's red, green, blue and alpha values.
+		 * Returns a Float32Array with the color's red, green and blue values.
 		 * 
 		 * @returns	{Float32Array}
 		 */

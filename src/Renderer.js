@@ -6,15 +6,19 @@
  */
 function Renderer() {
 	const
-		canvas = document.createElement("canvas"),
-		gl = canvas.getContext("webgl2"),
-		vao = gl.createVertexArray(),
-		buffer = {
+		canvas	= document.createElement("canvas"),
+		gl		= canvas.getContext("webgl2");
+
+	if (!gl) return console.error("This browser does not support WebGL 2.");
+
+	const
+		vao			= gl.createVertexArray(),
+		buffer		= {
 			position: gl.createBuffer(),
 			resolution: gl.createBuffer(),
 		},
-		attribute = {},
-		uniform = {};
+		attribute	= {},
+		uniform		= {};
 
 	Object.assign(this, {
 		canvas,
@@ -70,14 +74,17 @@ function Renderer() {
 
 			gl.uniform2f(uniform.resolution, canvas.width, canvas.height);
 
+			let w, h, x, y;
 			for (const mesh of scene.meshes) {
+				({w, h, x, y} = mesh);
+
 				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-					0, 0,
-					200, 0,
-					0, 100,
-					0, 100,
-					200, 0,
-					200, 100,
+					x,     y,
+					x + w, y,
+					x,     y + h,
+					x,     y + h,
+					x + w, y,
+					x + w, y + h,
 				]), gl.STATIC_DRAW);
 			}
 
@@ -91,10 +98,14 @@ function Renderer() {
 		 * @returns	{self}
 		 */
 		resize: () => {
-			Object.assign(this.canvas, {
+			const {gl, canvas} = this;
+
+			Object.assign(canvas, {
 				width: innerWidth,
 				height: innerHeight,
 			});
+
+			gl.viewport(0, 0, canvas.width, canvas.height);
 
 			return this;
 		},
@@ -103,11 +114,15 @@ function Renderer() {
 	// Stretch the canvas
 	this.resize();
 
+	canvas.textContent = "This browser does not support Canvas API."
 	document.body.appendChild(canvas);
+
+	delete this.constructor;
 
 	return this;
 }
 
+/** @type {Renderer} */
 const renderer = new Renderer();
 
 export {renderer as Renderer};
