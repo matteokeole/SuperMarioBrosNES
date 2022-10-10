@@ -1,4 +1,6 @@
-import {CELL_SIZE, TEXTURES, Mesh} from "../index.js";
+import {TEXTURES, Mesh} from "../index.js";
+
+const CELL_SIZE = 16;
 
 /**
  * @todo
@@ -10,20 +12,28 @@ import {CELL_SIZE, TEXTURES, Mesh} from "../index.js";
 export function Floor({width: w, height: h}) {
 	Mesh.call(this, ...arguments);
 
-	w /= CELL_SIZE;
-	h /= CELL_SIZE;
+	const
+		{x, y} = this.position,
+		w2 = w / CELL_SIZE,
+		h2 = h / CELL_SIZE;
 
 	return Object.assign(this, {
+		vertices: new Float32Array([
+			x,     y + h,
+			x + w, y + h,
+			x,     y,
+			x + w, y,
+		]),
+		source: "assets/textures/sprites.png",
 		texture: TEXTURES.get("assets/textures/sprites.png"),
 		uvs: new Float32Array([
-			0, 0,
-			w, 0,
-			0, h,
-			w, h,
+			0,  0,
+			w2, 0,
+			0,  h2,
+			w2, h2,
 		]),
-		uw: 1 / 5,
-		uh: 1 / 3,
-		ux: 0,
-		uy: 0,
+		w: CELL_SIZE,
+		h: CELL_SIZE,
+		uv: [0, 0],
 	});
 }

@@ -1,3 +1,5 @@
+import {RESOURCES} from "./index.js";
+
 /**
  * Renderer singleton.
  * 
@@ -88,9 +90,9 @@ function Renderer() {
 
 			gl.uniform2f(uniform.resolution, canvas.width, canvas.height);
 
-			let vertices, indices, texture, uvs, uw, uh, ux, uy;
+			let vertices, indices, texture, uvs, w, h, uv;
 			for (const mesh of scene.meshes) {
-				({vertices, indices, texture, uvs, uw, uh, ux, uy} = mesh);
+				({vertices, indices, texture, uvs, w, h, uv} = mesh);
 
 				// Pass the indexed vertices
 				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex);
@@ -102,11 +104,13 @@ function Renderer() {
 				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.uv);
 				gl.bufferData(gl.ARRAY_BUFFER, uvs, gl.STATIC_DRAW);
 
+				const resource = RESOURCES.get(mesh.source);
+
 				gl.uniform4fv(uniform.repeat, new Float32Array([
-					mesh.ux,
-					mesh.uy,
-					mesh.uw,
-					mesh.uh,
+					uv[0] / resource.width,
+					uv[1] / resource.height,
+					w / resource.width,
+					h / resource.height,
 				]));
 
 				gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);

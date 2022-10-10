@@ -1,5 +1,7 @@
 import {TEXTURES, Mesh} from "../index.js";
 
+const PIPE_SIZE = 32;
+
 /**
  * @todo
  * 
@@ -10,20 +12,19 @@ import {TEXTURES, Mesh} from "../index.js";
 export function Pipe({width: w, height: h}) {
 	Mesh.call(this, ...arguments);
 
-	w /= 96;
-	h /= 96;
+	const {x, y} = this.position;
 
 	return Object.assign(this, {
-		texture: TEXTURES.get("assets/textures/sprites.png"),
-		uvs: new Float32Array([
-			0, 0,
-			w, 0,
-			0, h,
-			w, h,
+		vertices: new Float32Array([
+			x,     y + h,
+			x + w, y + h,
+			x,     y,
+			x + w, y,
 		]),
-		uw: 2 / 5,
-		uh: 2 / 3,
-		ux: 0,
-		uy: 1 / 3,
+		source: "assets/textures/sprites.png",
+		texture: TEXTURES.get("assets/textures/sprites.png"),
+		w: PIPE_SIZE,
+		h: PIPE_SIZE,
+		uv: [0, 16],
 	});
 }

@@ -10,20 +10,20 @@ const scene = new Scene({background: new Color(0x000000)});
 
 const hill = new Hill({
 	type: 1,
-	position: new Vector2(0, 0),
+	position: new Vector2(16, 32),
 });
 const floor = new Floor({
-	width: 192,
-	height: 96,
+	width: 224,
+	height: 32,
 	position: new Vector2(0, 0),
 });
 const pipe = new Pipe({
-	width: 96,
-	height: 96,
-	position: new Vector2(48, 96),
+	width: 32,
+	height: 32,
+	position: new Vector2(16, 32),
 });
 
-scene.add(floor, pipe);
+scene.add(hill, floor, pipe);
 
 // Load the shader program
 const program = await Utils.createProgram(

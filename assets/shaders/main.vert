@@ -8,7 +8,7 @@ uniform vec2 u_resolution;
 out vec2 v_uv;
 
 void main() {
-	vec2 position = a_position / u_resolution * 2.0 - 1.0;
+	vec2 position = a_position / u_resolution * 6.0 - 1.0;
 
 	gl_Position = vec4(position, 0, 1);
 

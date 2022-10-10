@@ -1,4 +1,3 @@
-export const CELL_SIZE = 48;
 export const RESOURCES = new Map();
 export const TEXTURES = new Map();
 export {Color} from "./Color.js";
