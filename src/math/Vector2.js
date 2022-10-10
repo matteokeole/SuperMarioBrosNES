@@ -1,5 +1,5 @@
 /**
- * Creates a 2-dimensional vector.
+ * Constructs a 2-dimensional vector.
  * 
  * @constructor
  * @param	{number}	x
@@ -20,7 +20,7 @@ Vector2.prototype.clone = function() {
 };
 
 /**
- * Divides this vector by a given scalar value.
+ * Divides the components of this vector by n.
  * 
  * @param	{number}	n
  * @returns	{self}
@@ -30,7 +30,7 @@ Vector2.prototype.divideScalar = function(n) {
 };
 
 /**
- * Multiplies this vector by a given scalar value.
+ * Multiplies the components of this vector by n.
  * 
  * @param	{number}	n
  * @returns	{self}
@@ -43,15 +43,12 @@ Vector2.prototype.multiplyScalar = function(n) {
 };
 
 /**
- * Sets the coordinates of this vector.
+ * Sets the components of this vector.
  * 
  * @param	{number|Vector2}	x
- * @param	{number}			y
+ * @param	{number}			[y]
  * @returns	{self}
  */
 Vector2.prototype.set = function(x, y) {
-	return Object.assign(this, x instanceof Vector2 ?
-		{x: x.x, y: x.y,} :
-		{x, y},
-	);
+	return Object.assign(this, x instanceof Vector2 ? x : {x, y});
 };

@@ -1,4 +1,5 @@
-import {TEXTURES, Mesh} from "../index.js";
+import {TEXTURES} from "../index.js";
+import {Mesh} from "./Mesh.js";
 
 const CELL_SIZE = 16;
 
@@ -9,7 +10,7 @@ const CELL_SIZE = 16;
  * @augments	Mesh
  * @returns		{self}
  */
-export function Floor({width: w, height: h}) {
+export function Tile({width: w, height: h}) {
 	Mesh.call(this, ...arguments);
 
 	const

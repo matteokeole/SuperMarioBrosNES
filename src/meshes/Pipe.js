@@ -1,4 +1,5 @@
-import {TEXTURES, Mesh} from "../index.js";
+import {TEXTURES} from "../index.js";
+import {Mesh} from "./Mesh.js";
 
 const PIPE_SIZE = 32;
 
