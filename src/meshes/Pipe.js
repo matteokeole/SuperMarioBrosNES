@@ -8,7 +8,7 @@ const PIPE_SIZE = 32;
  * 
  * @constructor
  * @augments	Mesh
- * @returns		{self}
+ * @return		{self}
  */
 export function Pipe({width: w, height: h}) {
 	Mesh.call(this, ...arguments);

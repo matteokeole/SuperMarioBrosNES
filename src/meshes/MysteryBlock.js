@@ -1,22 +1,20 @@
 import {TEXTURES} from "../index.js";
 import {Mesh} from "./Mesh.js";
 
-const CELL_SIZE = 16;
-
 /**
- * @todo
+ * Mystery block constructor.
  * 
  * @constructor
  * @augments	Mesh
  * @return		{self}
  */
-export function Tile({width: w, height: h}) {
+export function MysteryBlock({position: p}) {
 	Mesh.call(this, ...arguments);
 
 	const
-		{x, y} = this.position,
-		w2 = w / CELL_SIZE,
-		h2 = h / CELL_SIZE;
+		{x, y} = p,
+		[w, h] = [16, 16],
+		uv = [64, 0];
 
 	return Object.assign(this, {
 		vertices: new Float32Array([
@@ -27,14 +25,8 @@ export function Tile({width: w, height: h}) {
 		]),
 		source: "assets/textures/sprites.png",
 		texture: TEXTURES.get("assets/textures/sprites.png"),
-		uvs: new Float32Array([
-			0,  0,
-			w2, 0,
-			0,  h2,
-			w2, h2,
-		]),
-		w: CELL_SIZE,
-		h: CELL_SIZE,
-		uv: [0, 0],
+		w,
+		h,
+		uv,
 	});
 }

@@ -7,7 +7,7 @@ import {Renderer} from "../index.js";
  * @async
  * @param	{string}	vertexPath		Vertex shader file path
  * @param	{string}	fragmentPath	Fragment shader file path
- * @returns	{WebGLProgram}
+ * @return	{WebGLProgram}
  */
 export async function createProgram(vertexPath, fragmentPath) {
 	const

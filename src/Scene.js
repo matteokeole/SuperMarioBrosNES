@@ -5,7 +5,7 @@ import {Color} from "./index.js";
  * 
  * @constructor
  * @param	{Color}	background	Background color
- * @returns	{self}
+ * @return	{self}
  */
 export function Scene({background = new Color(0x000000)} = {}) {
 	return Object.assign(this, {

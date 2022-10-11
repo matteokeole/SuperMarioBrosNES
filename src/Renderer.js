@@ -4,7 +4,7 @@ import {RESOURCES} from "./index.js";
  * Renderer singleton.
  * 
  * @constructor
- * @returns	{self}
+ * @return	{self}
  */
 function Renderer() {
 	const
@@ -38,7 +38,7 @@ function Renderer() {
 		 * Links a WebGLProgram to this renderer.
 		 * 
 		 * @param	{WebGlProgram}	program
-		 * @returns	{self}
+		 * @return	{self}
 		 */
 		linkProgram: program => {
 			const {gl} = this;
@@ -80,7 +80,7 @@ function Renderer() {
 		 * Renders a frame from a specified scene.
 		 * 
 		 * @param	{Scene}	scene
-		 * @returns	{self}
+		 * @return	{self}
 		 */
 		render: scene => {
 			const {gl} = this;
@@ -90,9 +90,9 @@ function Renderer() {
 
 			gl.uniform2f(uniform.resolution, canvas.width, canvas.height);
 
-			let vertices, indices, texture, uvs, w, h, uv;
+			let position, vertices, indices, texture, uvs, w, h, uv;
 			for (const mesh of scene.meshes) {
-				({vertices, indices, texture, uvs, w, h, uv} = mesh);
+				({position, vertices, indices, texture, uvs, w, h, uv} = mesh);
 
 				// Pass the indexed vertices
 				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex);
@@ -121,7 +121,7 @@ function Renderer() {
 		/**
 		 * Stretches the canvas to the page dimensions.
 		 * 
-		 * @returns	{self}
+		 * @return	{self}
 		 */
 		resize: () => {
 			const {gl, canvas} = this;

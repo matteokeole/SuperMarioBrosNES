@@ -4,6 +4,9 @@ export {Color} from "./Color.js";
 export {Renderer} from "./Renderer.js";
 export {Scene} from "./Scene.js";
 
+// Entities
+export * as Entity from "./entities/index.js";
+
 // Math utils
 export {Vector2} from "./math/index.js";
 

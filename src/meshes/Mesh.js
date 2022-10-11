@@ -2,7 +2,7 @@
  * @todo
  * 
  * @constructor
- * @returns	{self}
+ * @return	{self}
  */
 export function Mesh({position}) {
 	return Object.assign(this, {

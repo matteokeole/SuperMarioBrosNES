@@ -16,7 +16,7 @@ const HILLS = [
  * 
  * @constructor
  * @augments	Mesh
- * @returns		{self}
+ * @return		{self}
  */
 export function Hill({type = 0, position: p}) {
 	Mesh.call(this, ...arguments);
