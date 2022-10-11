@@ -8,7 +8,7 @@ export {Scene} from "./Scene.js";
 export * as Entity from "./entities/index.js";
 
 // Math utils
-export {Vector2} from "./math/index.js";
+export {Matrix3, Vector2} from "./math/index.js";
 
 // Meshes
 export * as Mesh from "./meshes/index.js";

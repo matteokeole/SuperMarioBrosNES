@@ -1,4 +1,4 @@
-import {RESOURCES} from "./index.js";
+import {RESOURCES, Matrix3} from "./index.js";
 
 /**
  * Renderer singleton.
@@ -68,6 +68,9 @@ function Renderer() {
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer.uv);
 			gl.vertexAttribPointer(attribute.uv, 2, gl.FLOAT, true, 0, 0);
 
+			// Locate world matrix uniform
+			uniform.world = gl.getUniformLocation(program, "u_world");
+
 			// Locate resolution uniform
 			uniform.resolution = gl.getUniformLocation(program, "u_resolution");
 
@@ -90,9 +93,13 @@ function Renderer() {
 
 			gl.uniform2f(uniform.resolution, canvas.width, canvas.height);
 
-			let position, vertices, indices, texture, uvs, w, h, uv;
+			let world, position, vertices, indices, texture, uvs, w, h, uv;
 			for (const mesh of scene.meshes) {
 				({position, vertices, indices, texture, uvs, w, h, uv} = mesh);
+				world = Matrix3.translation(position);
+
+				// Pass the world matrix
+				gl.uniformMatrix3fv(uniform.world, false, world);
 
 				// Pass the indexed vertices
 				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex);

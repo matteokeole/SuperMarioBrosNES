@@ -1,7 +1,7 @@
 import {Color} from "./index.js";
 
 /**
- * @todo
+ * Scene constructor.
  * 
  * @constructor
  * @param	{Color}	background	Background color

@@ -1,4 +1,4 @@
-import {update, render} from "./main.js";
+import {render} from "./main.js";
 
 export default {
 	start: loop,
@@ -10,6 +10,5 @@ let request;
 function loop() {
 	request = requestAnimationFrame(loop);
 
-	update();
 	render();
 }

@@ -20,10 +20,10 @@ export function Tile({width: w, height: h}) {
 
 	return Object.assign(this, {
 		vertices: new Float32Array([
-			x,     y + h,
-			x + w, y + h,
-			x,     y,
-			x + w, y,
+			0, h,
+			w, h,
+			0, 0,
+			w, 0,
 		]),
 		source: "assets/textures/sprites.png",
 		texture: TEXTURES.get("assets/textures/sprites.png"),

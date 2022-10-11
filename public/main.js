@@ -6,9 +6,10 @@ await Utils.loadTextures(
 	"assets/textures/sprites.png",
 );
 
-// 0x9290ff
-const scene = new Scene({background: new Color(0x000000)});
+// 0x9290ff / 0x000000
+const scene = new Scene({background: new Color(0x9290ff)});
 
+// A tile is 16x16
 const meshes = [
 	new Mesh.Hill({
 		type: 1,
@@ -34,12 +35,12 @@ const meshes = [
 ];
 
 const goomba = new Entity.Goomba({
-	position: new Vector2(32, 32),
-	velocity: new Vector2(1, 0),
+	position: new Vector2(40, 32),
+	velocity: new Vector2(2, 0),
 });
 
+// Last added objects are drawed first
 scene.add(...meshes, goomba);
-scene.remove(...meshes);
 
 // Load the shader program
 const program = await Utils.createProgram(
@@ -50,14 +51,15 @@ const program = await Utils.createProgram(
 // Link the program to the renderer
 Renderer.linkProgram(program);
 
+// Movement tests
 addEventListener("resize", Renderer.resize);
 addEventListener("keydown", e => {
 	switch (e.code) {
-		case "KeyD": goomba.position.x++; break;
+		case "KeyA": goomba.position.x -= goomba.velocity.x; break;
+		case "KeyD": goomba.position.x += goomba.velocity.x; break;
 	}
-})
+});
 
-export function update() {}
 export function render() {
 	Renderer.render(scene);
 }
