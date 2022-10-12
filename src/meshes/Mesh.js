@@ -1,5 +1,5 @@
 /**
- * @todo
+ * Mesh constructor.
  * 
  * @constructor
  * @return	{self}

@@ -1,14 +1,11 @@
-import {TEXTURES} from "../index.js";
+import {TEXTURES, State, Vector2} from "../index.js";
 
 export function Goomba({position, velocity}) {
-	const
-		{x, y} = position,
-		[w, h] = [16, 16],
-		uv = [32, 0];
-
 	return Object.assign(this, {
+		state: Goomba.IDLE,
 		position,
 		velocity,
+		direction: new Vector2(1, 1),
 		vertices: new Float32Array([
 			0,  16,
 			16, 16,
@@ -19,16 +16,19 @@ export function Goomba({position, velocity}) {
 			0, 2, 1,
 			2, 3, 1,
 		]),
-		uvs: new Float32Array([
-			0, 0,
-			1, 0,
-			0, 1,
-			1, 1,
-		]),
-		source: "assets/textures/sprites.png",
-		texture: TEXTURES.get("assets/textures/sprites.png"),
-		w,
-		h,
-		uv,
+	});
+}
+
+Goomba.init = function() {
+	Goomba.IDLE = new State({
+		size: [16, 16],
+		texture: TEXTURES.get("assets/textures/entities.png"),
+		uv: [0, 0],
+	});
+
+	Goomba.WALKING = new State({
+		size: [16, 16],
+		texture: TEXTURES.get("assets/textures/entities.png"),
+		uv: [16, 0],
 	});
 }

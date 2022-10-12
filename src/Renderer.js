@@ -1,4 +1,4 @@
-import {RESOURCES, Matrix3} from "./index.js";
+import {Matrix3} from "./index.js";
 
 /**
  * Renderer singleton.
@@ -71,6 +71,9 @@ function Renderer() {
 			// Locate world matrix uniform
 			uniform.world = gl.getUniformLocation(program, "u_world");
 
+			// Locate direction uniform
+			uniform.direction = gl.getUniformLocation(program, "u_direction");
+
 			// Locate resolution uniform
 			uniform.resolution = gl.getUniformLocation(program, "u_resolution");
 
@@ -93,15 +96,19 @@ function Renderer() {
 
 			gl.uniform2f(uniform.resolution, canvas.width, canvas.height);
 
-            const objects = [...scene.environment, ...scene.meshes, ...scene.entities];
+			const objects = [...scene.environment, ...scene.meshes];
+			let world, position, vertices, indices, texture, uvs, size, uv;
 
-			let world, position, vertices, indices, texture, uvs, w, h, uv;
+			// Render meshes
 			for (const object of objects) {
-				({position, vertices, indices, texture, uvs, w, h, uv} = object);
+				({position, vertices, indices, texture, uvs, size, uv} = object);
 				world = Matrix3.translation(position);
 
 				// Pass the world matrix
 				gl.uniformMatrix3fv(uniform.world, false, world);
+
+				// Default view direction
+				gl.uniform2f(uniform.direction, 1, 1);
 
 				// Pass the indexed vertices
 				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex);
@@ -109,17 +116,52 @@ function Renderer() {
 				gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
 				// Pass the texture coordinates
-				gl.bindTexture(gl.TEXTURE_2D, texture);
+				gl.bindTexture(gl.TEXTURE_2D, texture.texture);
 				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.uv);
 				gl.bufferData(gl.ARRAY_BUFFER, uvs, gl.STATIC_DRAW);
 
-				const resource = RESOURCES.get(object.source);
+				gl.uniform4fv(uniform.repeat, new Float32Array([
+					uv[0] / texture.width,
+					uv[1] / texture.height,
+					size[0] / texture.width,
+					size[1] / texture.height,
+				]));
+
+				gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+			}
+
+			// Render entities
+			for (const entity of scene.entities) {
+				const {vertices, position, direction, indices, state} = entity;
+				const {size, texture, uv} = state;
+
+				// Pass the world matrix
+				world = Matrix3.translation(position);
+				gl.uniformMatrix3fv(uniform.world, false, world);
+
+				// Pass the indexed vertices
+				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex);
+				gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+				gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+
+				// Entity view direction
+				gl.uniform2f(uniform.direction, direction.x, direction.y);
+
+				// Pass the texture coordinates
+				gl.bindTexture(gl.TEXTURE_2D, texture.texture);
+				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.uv);
+				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+					0, 0,
+					1, 0,
+					0, 1,
+					1, 1,
+				]), gl.STATIC_DRAW);
 
 				gl.uniform4fv(uniform.repeat, new Float32Array([
-					uv[0] / resource.width,
-					uv[1] / resource.height,
-					w / resource.width,
-					h / resource.height,
+					uv[0] / texture.width,
+					uv[1] / texture.height,
+					size[0] / texture.width,
+					size[1] / texture.height,
 				]));
 
 				gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);

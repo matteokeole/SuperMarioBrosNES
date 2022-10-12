@@ -3,22 +3,18 @@ import {Mesh} from "./Mesh.js";
 
 const TYPES = [
 	{
-		size: [48, 19],
-		uv: [0, 40],
+		size: [32, 16],
+		uv: [0, 24],
 	}, {
-		size: [80, 35],
-		uv: [48, 40],
-	},
+		size: [48, 16],
+		uv: [32, 24],
+	}, {
+		size: [64, 16],
+		uv: [80, 24],
+	}
 ];
 
-/**
- * Hill constructor.
- * 
- * @constructor
- * @augments	Mesh
- * @return		{self}
- */
-export function Hill({type = 0, position}) {
+export function Bush({type = 0, position}) {
 	Mesh.call(this, ...arguments);
 
 	const {size, uv} = TYPES[type];

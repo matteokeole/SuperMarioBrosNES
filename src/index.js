@@ -1,8 +1,9 @@
-export const RESOURCES = new Map();
 export const TEXTURES = new Map();
 export {Color} from "./Color.js";
 export {Renderer} from "./Renderer.js";
 export {Scene} from "./Scene.js";
+export {State} from "./State.js";
+export {Texture} from "./Texture.js";
 
 // Entities
 export * as Entity from "./entities/index.js";

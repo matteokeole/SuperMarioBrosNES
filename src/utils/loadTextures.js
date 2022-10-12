@@ -1,4 +1,4 @@
-import {RESOURCES, TEXTURES, Renderer} from "../index.js";
+import {TEXTURES, Renderer, Texture} from "../index.js";
 
 /**
  * Asynchronous texture loader.
@@ -28,8 +28,7 @@ export async function loadTextures(...paths) {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 		gl.generateMipmap(gl.TEXTURE_2D);
 
-		RESOURCES.set(path, image);
-		TEXTURES.set(path, texture);
+		TEXTURES.set(path, new Texture({image, texture}));
 	}
 
 	gl.bindTexture(gl.TEXTURE_2D, null);

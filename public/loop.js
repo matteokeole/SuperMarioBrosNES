@@ -9,17 +9,15 @@ export default {
 	stop: () => cancelAnimationFrame(request),
 };
 
-let request, then, now, dt;
+let request, then, now, dt, interval = 1000 / 60;
 
 function loop() {
 	request = requestAnimationFrame(loop);
 
-	// dt = then - (now = then = performance.now());
-
-	now = performance.now();
-	dt = now - then;
-	then = performance.now();
+	dt = ((now = performance.now()) - then) / interval;
 
 	update(dt);
 	render();
+
+	then = performance.now();
 }

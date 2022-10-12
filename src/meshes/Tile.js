@@ -1,10 +1,8 @@
 import {TEXTURES} from "../index.js";
 import {Mesh} from "./Mesh.js";
 
-const CELL_SIZE = 16;
-
 /**
- * @todo
+ * A textured tile with variable size.
  * 
  * @constructor
  * @augments	Mesh
@@ -14,9 +12,8 @@ export function Tile({width: w, height: h}) {
 	Mesh.call(this, ...arguments);
 
 	const
-		{x, y} = this.position,
-		w2 = w / CELL_SIZE,
-		h2 = h / CELL_SIZE;
+		w2 = w / 16,
+		h2 = h / 16;
 
 	return Object.assign(this, {
 		vertices: new Float32Array([
@@ -25,7 +22,7 @@ export function Tile({width: w, height: h}) {
 			0, 0,
 			w, 0,
 		]),
-		source: "assets/textures/sprites.png",
+		size: [16, 16],
 		texture: TEXTURES.get("assets/textures/sprites.png"),
 		uvs: new Float32Array([
 			0,  0,
@@ -33,8 +30,6 @@ export function Tile({width: w, height: h}) {
 			0,  h2,
 			w2, h2,
 		]),
-		w: CELL_SIZE,
-		h: CELL_SIZE,
 		uv: [0, 0],
 	});
 }
