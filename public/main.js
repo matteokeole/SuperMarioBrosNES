@@ -7,7 +7,7 @@ await Utils.loadTextures(
 );
 
 // 0x9290ff / 0x000000
-const scene = new Scene({background: new Color(0x9290ff)});
+const scene = new Scene({background: new Color(0x000000)});
 
 // A tile is 16x16
 const meshes = [
@@ -36,7 +36,7 @@ const meshes = [
 
 const goomba = new Entity.Goomba({
 	position: new Vector2(40, 32),
-	velocity: new Vector2(2, 0),
+	velocity: new Vector2(.1, 0),
 });
 
 // Last added objects are drawed first
@@ -55,11 +55,21 @@ Renderer.linkProgram(program);
 addEventListener("resize", Renderer.resize);
 addEventListener("keydown", e => {
 	switch (e.code) {
-		case "KeyA": goomba.position.x -= goomba.velocity.x; break;
-		case "KeyD": goomba.position.x += goomba.velocity.x; break;
+		case "KeyA": goomba.movesLeft = true; break;
+		case "KeyD": goomba.movesRight = true; break;
+	}
+});
+addEventListener("keyup", e => {
+	switch (e.code) {
+		case "KeyA": goomba.movesLeft = false; break;
+		case "KeyD": goomba.movesRight = false; break;
 	}
 });
 
+export function update(dt) {
+    goomba.movesLeft && (goomba.position.x -= goomba.velocity.x * dt);
+    goomba.movesRight && (goomba.position.x += goomba.velocity.x * dt);
+}
 export function render() {
 	Renderer.render(scene);
 }
