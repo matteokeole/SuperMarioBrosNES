@@ -165,7 +165,7 @@ const Game = {
 		if (!isDefined(Entity[0].collisions.rt) && !isDefined(Entity[0].collisions.rb)) canMoveRight = true;
 
 		// Left movement event
-		/*if (dirLeft) {
+		if (dirLeft) {
 			// Sprite animation & direction
 			Entity[0].state = "walking";
 			Entity[0].rotation = 180;
@@ -174,15 +174,15 @@ const Game = {
 				posX -= Entity[0].speedRaw;
 				// Looking for collisions
 				if (posX <= 0) posX = 0; // Border collision
-				if (isDefined(block.leftTop) || isDefined(block.leftBottom)) {
+				if (isDefined(Entity[0].collisions.lt) || isDefined(Entity[0].collisions.lb)) {
 					canMoveLeft = false;
 					if (posX % 1 !== 0) posX -= (posX % 1) - 1 // Avoid sticking
 				}
 			}
-		}*/
+		}
 
 		// Right movement event
-		/*if (dirRight) {
+		if (dirRight) {
 			// Sprite animation & direction
 			Entity[0].state = "walking";
 			Entity[0].rotation = 0;
@@ -191,63 +191,63 @@ const Game = {
 				posX += Entity[0].speedRaw;
 				// Looking for collisions
 				if (posX >= lvlRightBorder) posX = lvlRightBorder; // Border collision
-				if (isDefined(block.rightTop) || isDefined(block.rightBottom)) {
+				if (isDefined(Entity[0].collisions.rt) || isDefined(Entity[0].collisions.rb)) {
 					canMoveRight = false;
 					if (posX % 1 !== 0) posX -= (posX % 1) // Avoid sticking
 				}
 			}
-		}*/
+		}
 
 		// Idle event
-		// if (!dirLeft && !dirRight) Entity[0].state = "idle";
+		if (!dirLeft && !dirRight) Entity[0].state = "idle";
 
 		// Jump event
-		/*if (!jumpReleased || isJumping || isFalling) Entity[0].state = "jumping";
-		canJump = (!isDefined(block.aboveLeft) && !isDefined(block.aboveRight));
+		if (!jumpReleased || isJumping || isFalling) Entity[0].state = "jumping";
+		canJump = (!isDefined(Entity[0].collisions.lt) && !isDefined(Entity[0].collisions.rt));
 		if (canJump && isJumping) {
 			canJump = false;
 			posY += Entity[0].jumpSpeedRaw;
 			setTimeout(function() {isJumping = false}, 400)
-		}*/
+		}
 
 		// Hit block while jumping event
-		/*if (isJumping && (isDefined(block.aboveLeft) || isDefined(block.aboveRight))) {
+		if (isJumping && (isDefined(Entity[0].collisions.lt) || isDefined(Entity[0].collisions.rt))) {
 			// If the block is a brick block or a mystery block it gets popped
 			// Case 1: the player hits 1 hittable block
 			let e;
-			if (hittableBlocks.test(block.aboveLeft) && !hittableBlocks.test(block.aboveRight)) {
+			if (hittableBlocks.test(Entity[0].collisions.lt) && !hittableBlocks.test(Entity[0].collisions.rt)) {
 				// Left collision with a brick block or mystery block
-				e = document.querySelector(`.${block.aboveLeft}`);
+				e = document.querySelector(`.${Entity[0].collisions.lt}`);
 				e.classList.add("pop");
 				setTimeout(function() {e.classList.remove("pop")}, 200);
-				if (e.classList.contains("mystery")) giveItem(block.aboveLeft)
+				if (e.classList.contains("mystery")) giveItem(Entity[0].collisions.lt)
 			}
-			if (!hittableBlocks.test(block.aboveLeft) && hittableBlocks.test(block.aboveRight)) {
+			if (!hittableBlocks.test(Entity[0].collisions.lt) && hittableBlocks.test(Entity[0].collisions.rt)) {
 				// Right collision with a brick block or mystery block
-				e = document.querySelector(`.${block.aboveRight}`);
+				e = document.querySelector(`.${Entity[0].collisions.rt}`);
 				e.classList.add("pop");
 				setTimeout(function() {e.classList.remove("pop")}, 200);
-				if (e.classList.contains("mystery")) giveItem(block.aboveRight)
+				if (e.classList.contains("mystery")) giveItem(Entity[0].collisions.rt)
 			}
 			// Case 2: the player hits 2 blocks but only 1 can be animated at a time so a choice must be made
-			if (hittableBlocks.test(block.aboveLeft) && hittableBlocks.test(block.aboveRight)) {
+			if (hittableBlocks.test(Entity[0].collisions.lt) && hittableBlocks.test(Entity[0].collisions.rt)) {
 				if ((rawX % Game.u) < (Game.u / 2)) {
 					// Left collision with a brick block or mystery block
-					e = document.querySelector(`.${block.aboveLeft}`);
+					e = document.querySelector(`.${Entity[0].collisions.lt}`);
 					e.classList.add("pop");
 					setTimeout(function() {e.classList.remove("pop")}, 200);
-					if (e.classList.contains("mystery")) giveItem(block.aboveLeft)
+					if (e.classList.contains("mystery")) giveItem(Entity[0].collisions.lt)
 				} else if ((rawX % Game.u) >= (Game.u / 2)) {
 					// Right collision with a brick block or mystery block
-					e = document.querySelector(`.${block.aboveRight}`);
+					e = document.querySelector(`.${Entity[0].collisions.rt}`);
 					e.classList.add("pop");
 					setTimeout(function() {e.classList.remove("pop")}, 200);
-					if (e.classList.contains("mystery")) giveItem(block.aboveRight)
+					if (e.classList.contains("mystery")) giveItem(Entity[0].collisions.rt)
 
 				}
 			}
 			isJumping = false
-		}*/
+		}
 
 		// Player fall event
 		isFalling = (!isJumping && !isDefined(Entity[0].collisions.bl) && !isDefined(Entity[0].collisions.br) && !Entity[0].isDead);
@@ -261,7 +261,7 @@ const Game = {
 		Entity[0].setPosition = [posX, posY];
 
 		// Check if some goombas are defined
-		/*for (let goomba of Entities.goombas) {
+		/* for (let goomba of Entities.goombas) {
 			let goombaElement = document.querySelector(`.goomba-${goomba.id}`);
 			if (goomba.dir === "left") {
 				// Left direction
@@ -272,7 +272,7 @@ const Game = {
 			}
 			goombaElement.style.left = `${goomba.posX * Game.u}px`;
 			goombaElement.style.bottom = `${goomba.posY * Game.u}px`
-		}*/
+		} */
 
 		// Debug
 		debug.innerHTML = `
@@ -291,11 +291,12 @@ const Game = {
 	},
 	freeze: () => {
 		// Death function
-		/*if (Entity[0].isDead) {
+		if (Entity[0].isDead) {
 			Entity[0].sprite.style.visibility = "hidden";
 			Entity[0].state = "deathFromFall";
 			setTimeout(function() {Entity[0].state = "death"}, 500)
-		}*/
+		}
+
 		// Disable player input
 		if (canLoop) {
 			clearTimeout(canLoop);
