@@ -154,11 +154,13 @@ const Game = {
 
 		posX = Entity[0].x;
 		posY = Entity[0].y;
+		let rawX = posX * Game.u;
+		let rawY = posY * Game.u;
 
 		// Calculate player collisions
 		let collisions = [];
 		if (!Entity[0].isDead) Entity[0].collisions = calcCollisions(Entity[0]);
-		highlightCollisions(Entity[0]);
+		// highlightCollisions(Entity[0]);
 
 		// Movement handlers
 		if (!isDefined(Entity[0].collisions.lt) && !isDefined(Entity[0].collisions.lb)) canMoveLeft = true;
@@ -203,7 +205,7 @@ const Game = {
 
 		// Jump event
 		if (!jumpReleased || isJumping || isFalling) Entity[0].state = "jumping";
-		canJump = (!isDefined(Entity[0].collisions.lt) && !isDefined(Entity[0].collisions.rt));
+		canJump = (!isDefined(Entity[0].collisions.tl) && !isDefined(Entity[0].collisions.tr));
 		if (canJump && isJumping) {
 			canJump = false;
 			posY += Entity[0].jumpSpeedRaw;
@@ -211,39 +213,40 @@ const Game = {
 		}
 
 		// Hit block while jumping event
-		if (isJumping && (isDefined(Entity[0].collisions.lt) || isDefined(Entity[0].collisions.rt))) {
+		if (isJumping && (isDefined(Entity[0].collisions.tl) || isDefined(Entity[0].collisions.tr))) {
 			// If the block is a brick block or a mystery block it gets popped
 			// Case 1: the player hits 1 hittable block
+			const tl = Entity[0].collisions.tl;
+			const tr = Entity[0].collisions.tr;
 			let e;
-			if (hittableBlocks.test(Entity[0].collisions.lt) && !hittableBlocks.test(Entity[0].collisions.rt)) {
+			if (hittableBlocks.test(tl?.className) && !hittableBlocks.test(tr?.className)) {
 				// Left collision with a brick block or mystery block
-				e = document.querySelector(`.${Entity[0].collisions.lt}`);
+				e = tl;
 				e.classList.add("pop");
 				setTimeout(function() {e.classList.remove("pop")}, 200);
-				if (e.classList.contains("mystery")) giveItem(Entity[0].collisions.lt)
+				if (e.classList.contains("mystery")) giveItem(e);
 			}
-			if (!hittableBlocks.test(Entity[0].collisions.lt) && hittableBlocks.test(Entity[0].collisions.rt)) {
+			if (!hittableBlocks.test(tl?.className) && hittableBlocks.test(tr?.className)) {
 				// Right collision with a brick block or mystery block
-				e = document.querySelector(`.${Entity[0].collisions.rt}`);
+				e = tr;
 				e.classList.add("pop");
 				setTimeout(function() {e.classList.remove("pop")}, 200);
-				if (e.classList.contains("mystery")) giveItem(Entity[0].collisions.rt)
+				if (e.classList.contains("mystery")) giveItem(e);
 			}
 			// Case 2: the player hits 2 blocks but only 1 can be animated at a time so a choice must be made
-			if (hittableBlocks.test(Entity[0].collisions.lt) && hittableBlocks.test(Entity[0].collisions.rt)) {
+			if (hittableBlocks.test(tl?.className) && hittableBlocks.test(tr?.className)) {
 				if ((rawX % Game.u) < (Game.u / 2)) {
 					// Left collision with a brick block or mystery block
-					e = document.querySelector(`.${Entity[0].collisions.lt}`);
+					e = tl;
 					e.classList.add("pop");
 					setTimeout(function() {e.classList.remove("pop")}, 200);
-					if (e.classList.contains("mystery")) giveItem(Entity[0].collisions.lt)
+					if (e.classList.contains("mystery")) giveItem(e);
 				} else if ((rawX % Game.u) >= (Game.u / 2)) {
 					// Right collision with a brick block or mystery block
-					e = document.querySelector(`.${Entity[0].collisions.rt}`);
+					e = tr;
 					e.classList.add("pop");
 					setTimeout(function() {e.classList.remove("pop")}, 200);
-					if (e.classList.contains("mystery")) giveItem(Entity[0].collisions.rt)
-
+					if (e.classList.contains("mystery")) giveItem(e);
 				}
 			}
 			isJumping = false
@@ -261,7 +264,7 @@ const Game = {
 		Entity[0].setPosition = [posX, posY];
 
 		// Check if some goombas are defined
-		/* for (let goomba of Entities.goombas) {
+		/*for (let goomba of Entities.goombas) {
 			let goombaElement = document.querySelector(`.goomba-${goomba.id}`);
 			if (goomba.dir === "left") {
 				// Left direction
@@ -272,30 +275,30 @@ const Game = {
 			}
 			goombaElement.style.left = `${goomba.posX * Game.u}px`;
 			goombaElement.style.bottom = `${goomba.posY * Game.u}px`
-		} */
+		}*/
 
 		// Debug
 		debug.innerHTML = `
-			<span>POS X:</span> ${posX}<br>
-			<span>POS Y:</span> ${posY}<br><br>
+			<span>POS X:</span> ${posX.toFixed(2)}<br>
+			<span>POS Y:</span> ${posY.toFixed(2)}<br><br>
 			<span>FALLING:</span> ${isFalling}<br><br>
-			<span>TOP....LEFT..:</span> ${Entity[0].collisions.tl}<br>
-			<span>TOP....RIGHT.:</span> ${Entity[0].collisions.tr}<br>
-			<span>RIGHT..TOP...:</span> ${Entity[0].collisions.rt}<br>
-			<span>RIGHT..BOTTOM:</span> ${Entity[0].collisions.rb}<br>
-			<span>BOTTOM.RIGHT.:</span> ${Entity[0].collisions.br}<br>
-			<span>BOTTOM.LEFT..:</span> ${Entity[0].collisions.bl}<br>
-			<span>LEFT...BOTTOM:</span> ${Entity[0].collisions.lb}<br>
-			<span>LEFT...TOP...:</span> ${Entity[0].collisions.lt}<br>
+			<span>TOP....LEFT..:</span> ${!!Entity[0].collisions.tl}<br>
+			<span>TOP....RIGHT.:</span> ${!!Entity[0].collisions.tr}<br>
+			<span>RIGHT..TOP...:</span> ${!!Entity[0].collisions.rt}<br>
+			<span>RIGHT..BOTTOM:</span> ${!!Entity[0].collisions.rb}<br>
+			<span>BOTTOM.RIGHT.:</span> ${!!Entity[0].collisions.br}<br>
+			<span>BOTTOM.LEFT..:</span> ${!!Entity[0].collisions.bl}<br>
+			<span>LEFT...BOTTOM:</span> ${!!Entity[0].collisions.lb}<br>
+			<span>LEFT...TOP...:</span> ${!!Entity[0].collisions.lt}<br>
 		`
 	},
 	freeze: () => {
 		// Death function
-		if (Entity[0].isDead) {
+		/*if (Entity[0].isDead) {
 			Entity[0].sprite.style.visibility = "hidden";
 			Entity[0].state = "deathFromFall";
 			setTimeout(function() {Entity[0].state = "death"}, 500)
-		}
+		}*/
 
 		// Disable player input
 		if (canLoop) {
@@ -310,7 +313,7 @@ const Game = {
 isDefined = target => {
 	// Return true if the target element is decorative, is a map border or is empty
 	// return !(target === undefined || target[0] === "0" || target !== false || target.includes("behind"))
-	return !(target === false)
+	return !(target === false);
 },
 calcCollisions = target => {
 	// Calculate collisions coming from above, left, right and below the target and return an object with found collisions
@@ -333,7 +336,8 @@ Collision = {
 			Math.floor(target.x)
 		], query = false;
 		try {
-			if (!lvl[request[0]][request[1]].includes("behind")) query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
+			if (!lvl[request[0]][request[1]].includes("behind"))
+				query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
 		}
 		catch (e) {}
 		return query
@@ -344,7 +348,8 @@ Collision = {
 			Math.ceil(target.x)
 		], query = false;
 		try {
-			if (!lvl[request[0]][request[1]].includes("behind")) query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
+			if (!lvl[request[0]][request[1]].includes("behind"))
+				query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
 		}
 		catch (e) {}
 		return query
@@ -355,7 +360,8 @@ Collision = {
 			Math.ceil(target.x - 1.2)
 		], query = false;
 		try {
-			if (!lvl[request[0]][request[1]].includes("behind")) query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
+			if (!lvl[request[0]][request[1]].includes("behind"))
+				query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
 		}
 		catch (e) {}
 		return query
@@ -366,7 +372,8 @@ Collision = {
 			Math.ceil(target.x - 1.2)
 		], query = false;
 		try {
-			if (!lvl[request[0]][request[1]].includes("behind")) query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
+			if (!lvl[request[0]][request[1]].includes("behind"))
+				query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
 		}
 		catch (e) {}
 		return query
@@ -377,7 +384,8 @@ Collision = {
 			Math.floor(target.x + 1)
 		], query = false;
 		try {
-			if (!lvl[request[0]][request[1]].includes("behind")) query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
+			if (!lvl[request[0]][request[1]].includes("behind"))
+				query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
 		}
 		catch (e) {}
 		return query
@@ -388,7 +396,8 @@ Collision = {
 			Math.floor(target.x + 1)
 		], query = false;
 		try {
-			if (!lvl[request[0]][request[1]].includes("behind")) query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
+			if (!lvl[request[0]][request[1]].includes("behind"))
+				query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
 		}
 		catch (e) {}
 		return query
@@ -399,7 +408,8 @@ Collision = {
 			Math.floor(target.x)
 		], query = false;
 		try {
-			if (!lvl[request[0]][request[1]].includes("behind")) query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
+			if (!lvl[request[0]][request[1]].includes("behind"))
+				query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
 		}
 		catch (e) {}
 		return query
@@ -410,7 +420,8 @@ Collision = {
 			Math.ceil(target.x)
 		], query = false;
 		try {
-			if (!lvl[request[0]][request[1]].includes("behind")) query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
+			if (!lvl[request[0]][request[1]].includes("behind"))
+				query = map.querySelector(`.${lvl[request[0]][request[1]]}-${request[0]}-${request[1]}`)
 		}
 		catch (e) {}
 		return query
@@ -431,17 +442,16 @@ highlightCollisions = target => {
 },
 giveItem = e => {
 	// Change the hit mystery blocks by steel blocks
-	let indexes = /\d+-\d+/g.exec(e)[0];
+	let indexes = /\d+-\d+/g.exec(e.className)[0];
 	indexes = indexes.split("-");
 	lvl[indexes[0]][indexes[1]] = "steel"; // Replace the array element by "steel"
-	let block = document.querySelector(`.${e}`); // Get the element with the array coords
-	block.className = block.className.replace(/mystery/g, "steel") // Replace the classes that contain "mystery" by "steel"
+	e.className = e.className.replace(/mystery/g, "steel"); // Replace "mystery" by "steel"
 },
 map = document.querySelector("#map"),
 environment = document.querySelector("#environment"),
 pause = document.querySelector("#pause"),
 debug = document.querySelector("#debug"),
-hittableBlocks = /(brick|mystery)/, // Hittable blocks regexp
+hittableBlocks = /(block|mystery)/, // Hittable blocks regexp
 // Terrain textures
 G = "ground",
 g = "behind ground",
@@ -455,44 +465,44 @@ Y = "mystery",
 y = "behind mystery",
 H = "hidden",
 Entity = [{
-		sprite: document.querySelector("#player"), // DOM element
-		x: 0,
-		y: 0,
-		collisions: {},
-		rotation: 0,
-		state: "idle",
-		speed: 6, // Base speed
-		jumpSpeed: 6, // Base jump speed
-		fallSpeed: 6, // Base fall speed
-		isDead: false, // Is dead
-		isDeathAnimEnded: false, // Is death animation ended
-		get speedRaw() {return (this.speed / Game.u)}, // Get raw speed
-		get jumpSpeedRaw() {return (this.jumpSpeed / Game.u)}, // Get raw jump speed
-		get fallSpeedRaw() {return (this.fallSpeed / Game.u)}, // Get raw fall speed
-		set setPosition(pos) {
-			/** Set the player X and Y coordinates
-			 * @param {array} pos - X and Y coordinates array, unity-based
-			 */
-			this.x = pos[0];
-			this.y = pos[1];
-			this.sprite.style.left = `${this.x * Game.u}px`;
-			this.sprite.style.bottom = `${this.y * Game.u}px`
-		},
-		set setRotation(rot) {
-			/** Rotate the player by Y-axis
-			 * @param {number} rot - Rotation value, from 0 to 180 deg
-			 */
-			this.rotation = rot;
-			const rotation = `rotateY(${this.rotation}deg)`;
-			this.sprite.style.transform = rotation
-		},
-		set setState(state) {
-			/** Set an animation state for the player
-			 * @param {string} state (idle|walking|skidding|jumping|falling) - State name
-			 */
-			this.state = state;
-			this.sprite.className = this.state
-		}
+	sprite: document.querySelector("#player"), // DOM element
+	x: 0,
+	y: 0,
+	collisions: {},
+	rotation: 0,
+	state: "idle",
+	speed: 6, // Base speed
+	jumpSpeed: 6, // Base jump speed
+	fallSpeed: 6, // Base fall speed
+	isDead: false, // Is dead
+	isDeathAnimEnded: false, // Is death animation ended
+	get speedRaw() {return (this.speed / Game.u)}, // Get raw speed
+	get jumpSpeedRaw() {return (this.jumpSpeed / Game.u)}, // Get raw jump speed
+	get fallSpeedRaw() {return (this.fallSpeed / Game.u)}, // Get raw fall speed
+	set setPosition(pos) {
+		/** Set the player X and Y coordinates
+		 * @param {array} pos - X and Y coordinates array, unity-based
+		 */
+		this.x = pos[0];
+		this.y = pos[1];
+		this.sprite.style.left = `${this.x * Game.u}px`;
+		this.sprite.style.bottom = `${this.y * Game.u}px`
+	},
+	set setRotation(rot) {
+		/** Rotate the player by Y-axis
+		 * @param {number} rot - Rotation value, from 0 to 180 deg
+		 */
+		this.rotation = rot;
+		const rotation = `rotateY(${this.rotation}deg)`;
+		this.sprite.style.transform = rotation
+	},
+	set setState(state) {
+		/** Set an animation state for the player
+		 * @param {string} state (idle|walking|skidding|jumping|falling) - State name
+		 */
+		this.state = state;
+		this.sprite.className = this.state
+	},
 }],
 Goomba = function(id, [posX, posY], dir, speed = 2) {
 	/** Create a new goomba
