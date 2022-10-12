@@ -1,4 +1,5 @@
-import {Color, Entity, Mesh, Renderer, Scene, Utils, Vector2} from "../src/index.js";
+import {Color, Entity, Renderer, Scene, Utils, Vector2} from "../src/index.js";
+import init from "./init.js";
 import loop from "./loop.js";
 
 await Utils.loadTextures(
@@ -9,38 +10,13 @@ await Utils.loadTextures(
 // 0x9290ff / 0x000000
 const scene = new Scene({background: new Color(0x000000)});
 
-// A tile is 16x16
-const meshes = [
-	new Mesh.Hill({
-		type: 1,
-		position: new Vector2(16, 32),
-	}),
-	new Mesh.Hill({
-		type: 1,
-		position: new Vector2(91, 32),
-	}),
-	new Mesh.Tile({
-		width: 224,
-		height: 32,
-		position: new Vector2(0, 0),
-	}),
-	new Mesh.Pipe({
-		width: 32,
-		height: 32,
-		position: new Vector2(16, 32),
-	}),
-	new Mesh.MysteryBlock({
-		position: new Vector2(112, 64),
-	}),
-];
-
 const goomba = new Entity.Goomba({
 	position: new Vector2(40, 32),
 	velocity: new Vector2(.1, 0),
 });
+scene.addEntities(goomba);
 
-// Last added objects are drawed first
-scene.add(...meshes, goomba);
+init(scene);
 
 // Load the shader program
 const program = await Utils.createProgram(
@@ -67,8 +43,8 @@ addEventListener("keyup", e => {
 });
 
 export function update(dt) {
-    goomba.movesLeft && (goomba.position.x -= goomba.velocity.x * dt);
-    goomba.movesRight && (goomba.position.x += goomba.velocity.x * dt);
+	goomba.movesLeft && (goomba.position.x -= goomba.velocity.x * dt);
+	goomba.movesRight && (goomba.position.x += goomba.velocity.x * dt);
 }
 export function render() {
 	Renderer.render(scene);

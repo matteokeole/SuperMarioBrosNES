@@ -93,9 +93,11 @@ function Renderer() {
 
 			gl.uniform2f(uniform.resolution, canvas.width, canvas.height);
 
+            const objects = [...scene.environment, ...scene.meshes, ...scene.entities];
+
 			let world, position, vertices, indices, texture, uvs, w, h, uv;
-			for (const mesh of scene.meshes) {
-				({position, vertices, indices, texture, uvs, w, h, uv} = mesh);
+			for (const object of objects) {
+				({position, vertices, indices, texture, uvs, w, h, uv} = object);
 				world = Matrix3.translation(position);
 
 				// Pass the world matrix
@@ -111,7 +113,7 @@ function Renderer() {
 				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.uv);
 				gl.bufferData(gl.ARRAY_BUFFER, uvs, gl.STATIC_DRAW);
 
-				const resource = RESOURCES.get(mesh.source);
+				const resource = RESOURCES.get(object.source);
 
 				gl.uniform4fv(uniform.repeat, new Float32Array([
 					uv[0] / resource.width,
