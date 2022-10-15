@@ -4,7 +4,7 @@ import {Matrix3} from "./index.js";
  * Renderer singleton.
  * 
  * @constructor
- * @return	{self}
+ * @return	{this}
  */
 function Renderer() {
 	const
@@ -38,7 +38,7 @@ function Renderer() {
 		 * Links a WebGLProgram to this renderer.
 		 * 
 		 * @param	{WebGlProgram}	program
-		 * @return	{self}
+		 * @return	{this}
 		 */
 		linkProgram: program => {
 			const {gl} = this;
@@ -86,7 +86,7 @@ function Renderer() {
 		 * Renders a frame from a specified scene.
 		 * 
 		 * @param	{Scene}	scene
-		 * @return	{self}
+		 * @return	{this}
 		 */
 		render: scene => {
 			const {gl} = this;
@@ -96,12 +96,42 @@ function Renderer() {
 
 			gl.uniform2f(uniform.resolution, canvas.width, canvas.height);
 
-			const objects = [...scene.environment, ...scene.meshes];
 			let world, position, vertices, indices, texture, uvs, size, uv;
 
+			// Render environment meshes
+			for (const mesh of scene.environment) {
+				({position, vertices, indices, texture, uvs, size, uv} = mesh);
+				world = Matrix3.translation(position);
+
+				// Pass the world matrix
+				gl.uniformMatrix3fv(uniform.world, false, world);
+
+				// Default view direction
+				gl.uniform2f(uniform.direction, 1, 1);
+
+				// Pass the indexed vertices
+				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex);
+				gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+				gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+
+				// Pass the texture coordinates
+				gl.bindTexture(gl.TEXTURE_2D, texture.texture);
+				gl.bindBuffer(gl.ARRAY_BUFFER, buffer.uv);
+				gl.bufferData(gl.ARRAY_BUFFER, uvs, gl.STATIC_DRAW);
+
+				gl.uniform4fv(uniform.repeat, new Float32Array([
+					uv[0] / texture.width,
+					uv[1] / texture.height,
+					size[0] / texture.width,
+					size[1] / texture.height,
+				]));
+
+				gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+			}
+
 			// Render meshes
-			for (const object of objects) {
-				({position, vertices, indices, texture, uvs, size, uv} = object);
+			for (const mesh of scene.meshes) {
+				({position, vertices, indices, texture, uvs, size, uv} = mesh);
 				world = Matrix3.translation(position);
 
 				// Pass the world matrix
@@ -172,7 +202,7 @@ function Renderer() {
 		/**
 		 * Stretches the canvas to the page dimensions.
 		 * 
-		 * @return	{self}
+		 * @return	{this}
 		 */
 		resize: () => {
 			const {gl, canvas} = this;

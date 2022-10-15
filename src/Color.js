@@ -3,7 +3,7 @@
  * This does not supports alpha value.
  * 
  * @constructor
- * @return	{self}
+ * @return	{this}
  */
 export function Color(value) {
 	return Object.assign(this, {

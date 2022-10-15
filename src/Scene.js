@@ -5,7 +5,7 @@ import {Color} from "./index.js";
  * 
  * @constructor
  * @param	{Color}	background	Background color
- * @return	{self}
+ * @return	{this}
  */
 export function Scene({background = new Color(0x000000)} = {}) {
 	return Object.assign(this, {
@@ -13,8 +13,8 @@ export function Scene({background = new Color(0x000000)} = {}) {
 		environment: new Set(),
 		meshes: new Set(),
 		entities: new Set(),
-		addEnvironment: (...decorations) => {
-			for (const decoration of decorations) this.environment.add(decoration);
+		addEnvironment: (...environment) => {
+			for (const mesh of environment) this.environment.add(mesh);
 
 			return this;
 		},

@@ -6,7 +6,7 @@ import {Mesh} from "./Mesh.js";
  * 
  * @constructor
  * @augments	Mesh
- * @return		{self}
+ * @return		{this}
  */
 export function Pipe({width: w, height: h}) {
 	Mesh.call(this, ...arguments);

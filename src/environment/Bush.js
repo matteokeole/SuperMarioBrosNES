@@ -1,5 +1,5 @@
 import {TEXTURES} from "../index.js";
-import {Mesh} from "./Mesh.js";
+import {Environment} from "./Environment.js";
 
 const TYPES = [
 	{
@@ -11,11 +11,18 @@ const TYPES = [
 	}, {
 		size: [64, 16],
 		uv: [80, 24],
-	}
+	},
 ];
 
-export function Bush({type = 0, position}) {
-	Mesh.call(this, ...arguments);
+/**
+ * Bush constructor.
+ * 
+ * @constructor
+ * @augments	Environment
+ * @return		{this}
+ */
+export function Bush({type = 0}) {
+	Environment.call(this, ...arguments);
 
 	const {size, uv} = TYPES[type];
 

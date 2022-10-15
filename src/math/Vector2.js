@@ -4,7 +4,7 @@
  * @constructor
  * @param	{number}	x
  * @param	{number}	y
- * @return	{self}
+ * @return	{this}
  */
 export function Vector2(x, y) {
 	return this.set(x, y);
@@ -23,7 +23,7 @@ Vector2.prototype.clone = function() {
  * Divides the components of this vector by n.
  * 
  * @param	{number}	n
- * @return	{self}
+ * @return	{this}
  */
 Vector2.prototype.divideScalar = function(n) {
 	return this.multiplyScalar(1 / n);
@@ -33,7 +33,7 @@ Vector2.prototype.divideScalar = function(n) {
  * Multiplies the components of this vector by n.
  * 
  * @param	{number}	n
- * @return	{self}
+ * @return	{this}
  */
 Vector2.prototype.multiplyScalar = function(n) {
 	this.x *= n;
@@ -47,7 +47,7 @@ Vector2.prototype.multiplyScalar = function(n) {
  * 
  * @param	{number|Vector2}	x
  * @param	{number}			[y]
- * @return	{self}
+ * @return	{this}
  */
 Vector2.prototype.set = function(x, y) {
 	return Object.assign(this, x instanceof Vector2 ? x : {x, y});

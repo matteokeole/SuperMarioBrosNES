@@ -8,6 +8,9 @@ export {Texture} from "./Texture.js";
 // Entities
 export * as Entity from "./entities/index.js";
 
+// Environment meshes
+export * as Environment from "./environment/index.js";
+
 // Math utils
 export {Matrix3, Vector2} from "./math/index.js";
 

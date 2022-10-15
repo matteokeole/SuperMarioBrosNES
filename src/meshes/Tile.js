@@ -6,14 +6,12 @@ import {Mesh} from "./Mesh.js";
  * 
  * @constructor
  * @augments	Mesh
- * @return		{self}
+ * @return		{this}
  */
 export function Tile({width: w, height: h}) {
 	Mesh.call(this, ...arguments);
 
-	const
-		w2 = w / 16,
-		h2 = h / 16;
+	const w2 = w / 16, h2 = h / 16;
 
 	return Object.assign(this, {
 		vertices: new Float32Array([

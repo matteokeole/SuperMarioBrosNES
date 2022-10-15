@@ -6,9 +6,9 @@ import {Mesh} from "./Mesh.js";
  * 
  * @constructor
  * @augments	Mesh
- * @return		{self}
+ * @return		{this}
  */
-export function MysteryBlock({position: p}) {
+export function MysteryBlock() {
 	Mesh.call(this, ...arguments);
 
 	const size = [16, 16], uv = [64, 0];

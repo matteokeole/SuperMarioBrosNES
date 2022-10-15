@@ -20,8 +20,8 @@ await Utils.loadTextures(
 
 Entity.Goomba.init();
 
-// 0x9290ff / 0x000000
-const scene = new Scene({background: new Color(0x9290ff)});
+// 0x9290ff / 0x000000 / 0x754b3d
+const scene = new Scene({background: new Color(0x754b3d)});
 
 init(scene);
 

@@ -1,10 +1,10 @@
 /**
- * Mesh constructor.
+ * Environment mesh constructor.
  * 
  * @constructor
  * @return	{this}
  */
-export function Mesh({position}) {
+export function Environment({position}) {
 	return Object.assign(this, {
 		position,
 		indices: new Uint16Array([
