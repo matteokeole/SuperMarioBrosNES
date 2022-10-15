@@ -1,4 +1,5 @@
-import {update, render} from "./main.js";
+import update from "./update.js";
+import render from "./render.js";
 
 export default {
 	start: () => {

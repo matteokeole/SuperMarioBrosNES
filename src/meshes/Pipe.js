@@ -20,6 +20,6 @@ export function Pipe({width: w, height: h}) {
 		]),
 		size: [32, 32],
 		texture: TEXTURES.get("assets/textures/sprites.png"),
-		uv: [0, 16],
+		uv: [0, 64],
 	});
 }

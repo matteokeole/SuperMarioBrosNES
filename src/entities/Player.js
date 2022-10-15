@@ -1,11 +1,11 @@
 import {TEXTURES, State} from "../index.js";
 import {Entity} from "./Entity.js";
 
-export function Goomba() {
+export function Player() {
 	Entity.call(this, ...arguments);
 
 	return Object.assign(this, {
-		state: Goomba.IDLE,
+		state: Player.IDLE,
 		vertices: new Float32Array([
 			0,  16,
 			16, 16,
@@ -15,16 +15,22 @@ export function Goomba() {
 	});
 }
 
-Goomba.init = () => {
-	Goomba.IDLE = new State({
+Player.init = () => {
+	Player.IDLE = new State({
 		size: [16, 16],
 		texture: TEXTURES.get("assets/textures/sprites.png"),
-		uv: [0, 128],
+		uv: [0, 96],
 	});
 
-	Goomba.WALKING = new State({
+	Player.WALKING = new State({
 		size: [16, 16],
 		texture: TEXTURES.get("assets/textures/sprites.png"),
-		uv: [16, 128],
+		uv: [16, 96],
+	});
+
+	Player.JUMPING = new State({
+		size: [16, 16],
+		texture: TEXTURES.get("assets/textures/sprites.png"),
+		uv: [80, 96],
 	});
 };

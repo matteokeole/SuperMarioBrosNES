@@ -11,17 +11,15 @@ import {Mesh} from "./Mesh.js";
 export function MysteryBlock() {
 	Mesh.call(this, ...arguments);
 
-	const size = [16, 16], uv = [64, 0];
-
 	return Object.assign(this, {
 		vertices: new Float32Array([
-			0,       size[1],
-			size[0], size[1],
-			0,       0,
-			size[0], 0,
+			0,  16,
+			16, 16,
+			0,  0,
+			16, 0,
 		]),
-		size,
+		size: [16, 16],
 		texture: TEXTURES.get("assets/textures/sprites.png"),
-		uv,
+		uv: [64, 0],
 	});
 }

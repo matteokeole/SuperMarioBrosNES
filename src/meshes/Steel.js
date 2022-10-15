@@ -2,33 +2,24 @@ import {TEXTURES} from "../index.js";
 import {Mesh} from "./Mesh.js";
 
 /**
- * A textured tile with variable size.
+ * Steel block constructor.
  * 
  * @constructor
  * @augments	Mesh
  * @return		{this}
  */
-export function Tile({width: w, height: h}) {
+export function Steel() {
 	Mesh.call(this, ...arguments);
-
-	const w2 = w / 16, h2 = h / 16;
 
 	return Object.assign(this, {
 		vertices: new Float32Array([
-			0, h,
-			w, h,
-			0, 0,
-			w, 0,
+			0,  16,
+			16, 16,
+			0,  0,
+			16, 0,
 		]),
-		realSize: [w, h],
 		size: [16, 16],
 		texture: TEXTURES.get("assets/textures/sprites.png"),
-		uvs: new Float32Array([
-			0,  0,
-			w2, 0,
-			0,  h2,
-			w2, h2,
-		]),
-		uv: [0, 0],
+		uv: [48, 0],
 	});
 }
