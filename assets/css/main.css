@@ -1,30 +1,26 @@
-/* CSS imports */
 @import url(environment.css);
 @import url(keyframes.css);
 @import url(sprites.css);
 
-/* Super Mario Bros. NES font import */
 @font-face {
 	font-family: SMBRegular;
-	src: url(../fonts/SMBRegular.ttf) format("truetype")
+	src: url(../fonts/SMBRegular.ttf) format("truetype");
 }
 
-/* This only works for Firefox, for Chrome use "pixelated" instead */
-* {image-rendering: crisp-edges}
-
 html, body {
-	margin: 0;
+	margin: initial;
 	overflow: hidden;
 	background-color: #000;
 	user-select: none;
-	font-family: SMBRegular
+	font-family: SMBRegular;
+	image-rendering: pixelated;
 }
 
 /* Map container */
 #map {
 	height: 100vh;
-	background-color: #5c94fc;
-	/*background-color: #754b3d*/
+	/*background-color: #5c94fc;*/
+	background-color: #754b3d;
 }
 
 /* Pause menu */

@@ -68,89 +68,113 @@ const Game = {
 			environment.appendChild(hill)
 		})
 	},
+	/**
+	 * Key down input
+	 */
 	keydown: e => {
-		// Key down input
-		switch (e.keyCode) {
+		switch (e.code) {
 			// Left arrow, Q key
-			case 37:
-			case 81:
+			case "ArrowLeft":
+			case "KeyA":
 				dirLeft = true;
+
 				break;
 			// Right arrow, D key
-			case 39:
-			case 68:
+			case "ArrowRight":
+			case "KeyD":
 				dirRight = true;
-				break
+
+				break;
 		}
 	},
+	/**
+	 * Key down jump input
+	 */
 	keydownJump: e => {
-		// Key down jump input
-		if (e.keyCode === 32) {
-			jumpReleased = false;
-			canJump = false;
-			isJumping = true
-		}
+		if (e.code !== "Space") return;
+
+		jumpReleased = false;
+		canJump = false;
+		isJumping = true;
 	},
+	/**
+	 * Key up input
+	 */
 	keyup: e => {
-		// Key up input
-		switch (e.keyCode) {
+		switch (e.code) {
 			// Left arrow, Q key
-			case 37:
-			case 81:
+			case "ArrowLeft":
+			case "KeyA":
 				dirLeft = false;
+
 				break;
 			// Right arrow, D key
-			case 39:
-			case 68:
+			case "ArrowRight":
+			case "KeyD":
 				dirRight = false;
+
 				break;
 			// Spacebar
-			case 32:
+			case "Space":
 				jumpReleased = true;
 				canJump = true;
 				isJumping = false;
-				break
+
+				break;
 		}
 	},
+	/**
+	 * Toggle pause menu display
+	 */
 	togglePauseMenu: () => {
-		// Toggle pause menu display
 		if (pause.style.visibility === "hidden") {
 			// Show pause menu & block player control
 			paused = true;
 			Game.freeze();
-			pause.style.visibility = "visible"
-		} else {
-			// Hide pause menu & allow player control
-			paused = false;
-			if (spawned) Game.unfreeze();
-			pause.style.visibility = "hidden"
+			pause.style.visibility = "visible";
+
+			return;
 		}
+
+		// Hide pause menu & allow player control
+		paused = false;
+		spawned && Game.unfreeze();
+		pause.style.visibility = "hidden";
 	},
+	/**
+	 * Enable player input
+	 */
 	unfreeze: () => {
-		// Enable player input
-		if (!canLoop) {
-			addEventListener("keydown", Game.keydown);
-			// Jump handler
-			if (canJump && jumpReleased) addEventListener("keydown", Game.keydownJump);
-			else removeEventListener("keydown", Game.keydownJump);
-			addEventListener("keyup", Game.keyup);
-			canLoop = setTimeout(Game.loop, 1000 / Game.fps)
-		}
+		if (canLoop) return;
+
+		addEventListener("keydown", Game.keydown);
+		addEventListener("keyup", Game.keyup);
+
+		// Jump handler
+		canJump && jumpReleased ?
+			addEventListener("keydown", Game.keydownJump) :
+			removeEventListener("keydown", Game.keydownJump);
+
+		canLoop = setTimeout(Game.loop, 1000 / Game.fps);
 	},
 	loop: () => {
 		// Render function (started by Game.unfreeze() and paused by Game.freeze())
-		canLoop = undefined;
+		canLoop = null;
 
 		// Player death event
 		if (Entity[0].isDead && !Entity[0].isDeathAnimEnded) {
 			Game.freeze();
 			Entity[0].isDeathAnimEnded = true;
-			Entity[0].sprite.style.visibility = "hidden";
-			Entity[0].state = "deathFromFall";
-			setTimeout(() => {Entity[0].state = "death"}, 500)
-		} else Game.unfreeze();
+			// Entity[0].sprite.style.visibility = "hidden";
+			Entity[0].setState = "deathFromFall";
+			setTimeout(() => Entity[0].setState = "death", 500);
 
-		Entity[0].state = "idle";
+			return;
+		}
+
+		Game.unfreeze();
+
+		Entity[0].setState = "idle";
 
 		posX = Entity[0].x;
 		posY = Entity[0].y;
@@ -169,8 +193,8 @@ const Game = {
 		// Left movement event
 		if (dirLeft) {
 			// Sprite animation & direction
-			Entity[0].state = "walking";
-			Entity[0].rotation = 180;
+			Entity[0].setState = "walking";
+			Entity[0].setRotation = 180;
 			if (canMoveLeft) {
 				canMoveRight = true;
 				posX -= Entity[0].speedRaw;
@@ -186,8 +210,8 @@ const Game = {
 		// Right movement event
 		if (dirRight) {
 			// Sprite animation & direction
-			Entity[0].state = "walking";
-			Entity[0].rotation = 0;
+			Entity[0].setState = "walking";
+			Entity[0].setRotation = 0;
 			if (canMoveRight) {
 				canMoveLeft = true;
 				posX += Entity[0].speedRaw;
@@ -201,15 +225,15 @@ const Game = {
 		}
 
 		// Idle event
-		if (!dirLeft && !dirRight) Entity[0].state = "idle";
+		if (!dirLeft && !dirRight) Entity[0].setState = "idle";
 
 		// Jump event
-		if (!jumpReleased || isJumping || isFalling) Entity[0].state = "jumping";
+		if (!jumpReleased || isJumping || isFalling) Entity[0].setState = "jumping";
 		canJump = (!isDefined(Entity[0].collisions.tl) && !isDefined(Entity[0].collisions.tr));
 		if (canJump && isJumping) {
 			canJump = false;
 			posY += Entity[0].jumpSpeedRaw;
-			setTimeout(function() {isJumping = false}, 400)
+			setTimeout(() => isJumping = false, 400);
 		}
 
 		// Hit block while jumping event
@@ -223,29 +247,29 @@ const Game = {
 				// Left collision with a brick block or mystery block
 				e = tl;
 				e.classList.add("pop");
-				setTimeout(function() {e.classList.remove("pop")}, 200);
+				setTimeout(() => e.classList.remove("pop"), 200);
 				if (e.classList.contains("mystery")) giveItem(e);
 			}
 			if (!hittableBlocks.test(tl?.className) && hittableBlocks.test(tr?.className)) {
 				// Right collision with a brick block or mystery block
 				e = tr;
 				e.classList.add("pop");
-				setTimeout(function() {e.classList.remove("pop")}, 200);
+				setTimeout(() => e.classList.remove("pop"), 200);
 				if (e.classList.contains("mystery")) giveItem(e);
 			}
 			// Case 2: the player hits 2 blocks but only 1 can be animated at a time so a choice must be made
 			if (hittableBlocks.test(tl?.className) && hittableBlocks.test(tr?.className)) {
-				if ((rawX % Game.u) < (Game.u / 2)) {
+				if (rawX % Game.u < Game.u / 2) {
 					// Left collision with a brick block or mystery block
 					e = tl;
 					e.classList.add("pop");
-					setTimeout(function() {e.classList.remove("pop")}, 200);
+					setTimeout(() => e.classList.remove("pop"), 200);
 					if (e.classList.contains("mystery")) giveItem(e);
-				} else if ((rawX % Game.u) >= (Game.u / 2)) {
+				} else if (rawX % Game.u >= Game.u / 2) {
 					// Right collision with a brick block or mystery block
 					e = tr;
 					e.classList.add("pop");
-					setTimeout(function() {e.classList.remove("pop")}, 200);
+					setTimeout(() => e.classList.remove("pop"), 200);
 					if (e.classList.contains("mystery")) giveItem(e);
 				}
 			}
@@ -264,17 +288,24 @@ const Game = {
 		Entity[0].setPosition = [posX, posY];
 
 		// Check if some goombas are defined
-		/*for (let goomba of Entities.goombas) {
-			let goombaElement = document.querySelector(`.goomba-${goomba.id}`);
-			if (goomba.dir === "left") {
-				// Left direction
-				// goomba.posX -= goomba.speed
-			} else if (goomba.dir === "right") {
-				// Right direction
-				// goomba.posX += goomba.speed
+		/*for (const entity of Object.values(Entity)) {
+			if (entity?.type !== "goomba") continue;
+
+			const goombaElement = document.querySelector(`.goomba-${entity.id}`);
+
+			switch (entity.dir) {
+				case "left":
+					entity.posX -= entity.speed;
+
+					break;
+				case "right":
+					entity.posX += entity.speed;
+
+					break;
 			}
-			goombaElement.style.left = `${goomba.posX * Game.u}px`;
-			goombaElement.style.bottom = `${goomba.posY * Game.u}px`
+
+			goombaElement.style.left = `${entity.posX * Game.u}px`;
+			goombaElement.style.bottom = `${entity.posY * Game.u}px`;
 		}*/
 
 		// Debug
@@ -290,44 +321,52 @@ const Game = {
 			<span>BOTTOM.LEFT..:</span> ${!!Entity[0].collisions.bl}<br>
 			<span>LEFT...BOTTOM:</span> ${!!Entity[0].collisions.lb}<br>
 			<span>LEFT...TOP...:</span> ${!!Entity[0].collisions.lt}<br>
-		`
+		`;
 	},
 	freeze: () => {
 		// Death function
-		/*if (Entity[0].isDead) {
+		if (Entity[0].isDead) {
 			Entity[0].sprite.style.visibility = "hidden";
-			Entity[0].state = "deathFromFall";
-			setTimeout(function() {Entity[0].state = "death"}, 500)
-		}*/
+			Entity[0].setState = "deathFromFall";
+			setTimeout(() => Entity[0].setState = "death", 500);
+		}
 
 		// Disable player input
 		if (canLoop) {
 			clearTimeout(canLoop);
-			canLoop = undefined
+
+			canLoop = null;
 		}
+
 		removeEventListener("keydown", Game.keydown);
 		removeEventListener("keydown", Game.keydownJump);
 		removeEventListener("keyup", Game.keyup);
 	}
 },
-isDefined = target => {
-	// Return true if the target element is decorative, is a map border or is empty
-	// return !(target === undefined || target[0] === "0" || target !== false || target.includes("behind"))
-	return !(target === false);
-},
-calcCollisions = target => {
-	// Calculate collisions coming from above, left, right and below the target and return an object with found collisions
-	return {
-		tl: Collision.calcTopLeft(target),
-		tr: Collision.calcTopRight(target),
-		rt: Collision.calcRightTop(target),
-		rb: Collision.calcRightBottom(target),
-		br: Collision.calcBottomRight(target),
-		bl: Collision.calcBottomLeft(target),
-		lb: Collision.calcLeftBottom(target),
-		lt: Collision.calcLeftTop(target)
-	}
-},
+/**
+ * Return true if the target element is decorative, is a map border or is empty
+ * 
+ * @param	{HTMLElement|false}	target
+ * @return	{boolean}
+ */
+isDefined = target => !(target === false),
+/**
+ * Calculates collisions coming from above, left, right and below the target.
+ * Returns an object with found collisions.
+ * 
+ * @param	{HTMLElement}	target
+ * @return	{object}
+ */
+calcCollisions = target => ({
+	tl: Collision.calcTopLeft(target),
+	tr: Collision.calcTopRight(target),
+	rt: Collision.calcRightTop(target),
+	rb: Collision.calcRightBottom(target),
+	br: Collision.calcBottomRight(target),
+	bl: Collision.calcBottomLeft(target),
+	lb: Collision.calcLeftBottom(target),
+	lt: Collision.calcLeftTop(target),
+}),
 Collision = {
 	// Calculate collisions coming from above, left, right and below
 	calcTopLeft: target => {
@@ -514,6 +553,7 @@ Goomba = function(id, [posX, posY], dir, speed = 2) {
 	 */
 	speed /= Game.u;
 	let goomba = {
+		type: "goomba",
 		id: id,
 		posX: posX,
 		posY: posY,
@@ -527,15 +567,15 @@ Goomba = function(id, [posX, posY], dir, speed = 2) {
 	e.style.bottom = `${posY * Game.u}px`;
 	map.appendChild(e)
 };
-// Coordinates, movement, jump, fall
-let canLoop, // Looping function
-paused = true, // Game paused
-spawned = false, // Player spawn animation end
-dirLeft, // Left direction
-canMoveLeft = true, // Can move to left
-dirRight, // Right direction
-canMoveRight = true, // Can move to right
-jumpReleased = true, // Is spacebar released
-canJump = true, // Can do a jump
-isJumping = false, // Is jumping
-isFalling = false // Is falling
+
+let canLoop,					// Looping function
+	paused			= true,		// Game paused
+	spawned			= false,	// Player spawn animation end
+	dirLeft,					// Left direction
+	canMoveLeft		= true,		// Can move to left
+	dirRight,					// Right direction
+	canMoveRight	= true,		// Can move to right
+	jumpReleased	= true,		// Is spacebar released
+	canJump			= true,		// Can do a jump
+	isJumping		= false,	// Is jumping
+	isFalling		= false;	// Is falling
