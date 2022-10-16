@@ -16,9 +16,7 @@ import {initEvents} from "./events.js";
 // Load textures
 await Utils.loadTextures(
 	"assets/textures/environment.png",
-	"assets/textures/sprites0.png",
 	"assets/textures/sprites.png",
-	"assets/textures/entities.png",
 );
 
 // Initialize the states after the textures loading
