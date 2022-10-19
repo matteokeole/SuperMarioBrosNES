@@ -1,4 +1,4 @@
-import {TEXTURES, State} from "../index.js";
+import {TEXTURES} from "../index.js";
 import {Entity} from "./Entity.js";
 
 export function Goomba() {
@@ -16,15 +16,19 @@ export function Goomba() {
 }
 
 Goomba.init = () => {
-	Goomba.IDLE = new State({
+	Goomba.IDLE = {
+		name: "idle",
 		size: [16, 16],
+		hitbox: [16, 16],
 		texture: TEXTURES.get("assets/textures/sprites.png"),
 		uv: [0, 128],
-	});
+	};
 
-	Goomba.WALKING = new State({
+	Goomba.WALKING = {
+		name: "walking",
 		size: [16, 16],
+		hitbox: [16, 16],
 		texture: TEXTURES.get("assets/textures/sprites.png"),
 		uv: [16, 128],
-	});
+	};
 };

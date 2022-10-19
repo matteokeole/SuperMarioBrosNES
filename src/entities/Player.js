@@ -1,4 +1,4 @@
-import {TEXTURES, State} from "../index.js";
+import {TEXTURES} from "../index.js";
 import {Entity} from "./Entity.js";
 
 export function Player() {
@@ -16,21 +16,27 @@ export function Player() {
 }
 
 Player.init = () => {
-	Player.IDLE = new State({
+	Player.IDLE = {
+		name: "idle",
 		size: [16, 16],
+		hitbox: [16, 16],
 		texture: TEXTURES.get("assets/textures/sprites.png"),
 		uv: [0, 96],
-	});
+	};
 
-	Player.WALKING = new State({
+	Player.WALKING = {
+		name: "walking",
 		size: [16, 16],
+		hitbox: [16, 16],
 		texture: TEXTURES.get("assets/textures/sprites.png"),
 		uv: [16, 96],
-	});
+	};
 
-	Player.JUMPING = new State({
+	Player.JUMPING = {
+		name: "jumping",
 		size: [16, 16],
+		hitbox: [16, 16],
 		texture: TEXTURES.get("assets/textures/sprites.png"),
 		uv: [80, 96],
-	});
+	};
 };

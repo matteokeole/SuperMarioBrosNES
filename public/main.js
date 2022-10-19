@@ -35,5 +35,7 @@ export const
 init(scene);
 scene.addEntities(player);
 
+console.log(Entity.Player.IDLE)
+
 loop.start();
 initEvents();

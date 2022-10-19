@@ -12,7 +12,7 @@ export function Entity({position, velocity}) {
 		]),
 		intersects: (mesh, x, y) => {
 			const
-				es = this.state.size,
+				es = this.state.hitbox,
 				mp = mesh.position,
 				ms = mesh.realSize ?? mesh.size;
 
